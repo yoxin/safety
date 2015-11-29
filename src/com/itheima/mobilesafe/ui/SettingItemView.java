@@ -19,7 +19,9 @@ public class SettingItemView extends RelativeLayout {
 	private CheckBox cb_status;
 	private TextView tv_desc;
 	private TextView tv_title;
-	
+	private String title;
+	private String desc_on;
+	private String desc_off;
 	/**
 	 * 初始化布局文件
 	 * @param context
@@ -31,7 +33,7 @@ public class SettingItemView extends RelativeLayout {
 		cb_status = (CheckBox) this.findViewById(R.id.cb_status);
 		tv_desc = (TextView) this.findViewById(R.id.tv_desc);
 		tv_title = (TextView) this.findViewById(R.id.tv_title);
-		
+		tv_title.setText(title);
 	}
 
 	public SettingItemView(Context context, AttributeSet attrs, int defStyle) {
@@ -41,6 +43,9 @@ public class SettingItemView extends RelativeLayout {
 
 	public SettingItemView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		title=attrs.getAttributeValue("http://schemas.android.com/apk/res/com.itheima.mobilesafe", "title");
+		desc_on=attrs.getAttributeValue("http://schemas.android.com/apk/res/com.itheima.mobilesafe", "desc_on");
+		desc_off=attrs.getAttributeValue("http://schemas.android.com/apk/res/com.itheima.mobilesafe", "desc_off");
 		iniView(context);
 	}
 
@@ -64,6 +69,11 @@ public class SettingItemView extends RelativeLayout {
 	 */
 	
 	public void setChecked(boolean checked){
+		if (checked) {
+			setDesc(desc_on);
+		} else {
+			setDesc(desc_off);
+		}
 		cb_status.setChecked(checked);
 	}
 	
