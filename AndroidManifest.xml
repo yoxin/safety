@@ -28,6 +28,11 @@
         </activity>
         <activity android:name="com.itheima.mobilesafe.HomeActivity"/>
         <activity android:name="com.itheima.mobilesafe.SettingActivity"/>
+        <activity android:name="com.itheima.mobilesafe.LostFindActivity"/>
+        <activity android:name="com.itheima.mobilesafe.Setup1Activity"/>
+        <activity android:name="com.itheima.mobilesafe.Setup2Activity"/>
+        <activity android:name="com.itheima.mobilesafe.Setup3Activity"/>
+        <activity android:name="com.itheima.mobilesafe.Setup4Activity"/>
     </application>
 
 </manifest>

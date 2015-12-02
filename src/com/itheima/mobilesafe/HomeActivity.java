@@ -109,6 +109,8 @@ public class HomeActivity extends Activity {
 				if (MD5Utils.md5Password(pwd).equals(savePassword)) {
 					LogUtil.d(TAG, "密码正确，进入防盗页面");
 					alertDialog.dismiss();
+					Intent intent = new Intent(HomeActivity.this,LostFindActivity.class);
+					startActivity(intent);
 				} else {
 					Toast.makeText(HomeActivity.this, "密码错误", Toast.LENGTH_LONG).show();
 				}
@@ -152,6 +154,8 @@ public class HomeActivity extends Activity {
 					editor.commit();
 					alertDialog.dismiss();
 					LogUtil.d(TAG, "完成密码设置，进入设置向导页面");
+					Intent intent = new Intent(HomeActivity.this,Setup1Activity.class);
+					startActivity(intent);
 				}
 			}
 		});
