@@ -15,12 +15,14 @@
         android:text="SIM卡变更后\n报警短信会发送安全号码" />
     
     <EditText 
+        android:id="@+id/et_setup3_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="phone"
         android:hint="请设置安全号码"/>
     
     <Button
+        android:onClick="selectContact"
         android:background="@drawable/button_bg"
         android:text="选择联系人"
         android:layout_width="match_parent"

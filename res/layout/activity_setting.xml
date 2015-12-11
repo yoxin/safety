@@ -10,6 +10,7 @@
         android:text="设置中心"/>
 
     <com.itheima.mobilesafe.ui.SettingItemView
+        android:id="@+id/siv_update"
         itheima:title="设置是否自动更新"
         itheima:desc_on="自动更新已经开启"
         itheima:desc_off="自动更新已经关闭"
