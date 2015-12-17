@@ -1,14 +1,17 @@
 package com.itheima.mobilesafe.receiver;
 
-import com.itheima.mobilesafe.R;
-import com.itheima.mobilesafe.utils.LogUtil;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.text.TextUtils;
+
+import com.itheima.mobilesafe.R;
+import com.itheima.mobilesafe.service.LocationService;
+import com.itheima.mobilesafe.utils.LogUtil;
 
 public class SMSReceiver extends BroadcastReceiver {
 
@@ -33,6 +36,21 @@ public class SMSReceiver extends BroadcastReceiver {
 				if ("#*location*#".equals(body)) {
 					// 获得手机位置地址
 					LogUtil.e(TAG, "获得手机位置地址");
+					Intent locationIntent = new Intent(context,
+							LocationService.class);
+					context.startService(locationIntent);
+					SharedPreferences sp = context.getSharedPreferences("config",
+							Context.MODE_PRIVATE);
+					String lastlocation = sp.getString("location", null);
+					if (TextUtils.isEmpty(lastlocation)) {
+						SmsManager.getDefault().sendTextMessage(sender, null,
+								"location getting...", null, null);
+
+					} else {
+						SmsManager.getDefault().sendTextMessage(sender, null,
+								lastlocation, null, null);
+					}
+
 					// 截断广播
 					abortBroadcast();
 				} else if ("#*alarm*#".equals(body)) {
