@@ -1,11 +1,13 @@
 package com.itheima.mobilesafe.receiver;
 
+import com.itheima.mobilesafe.R;
 import com.itheima.mobilesafe.utils.LogUtil;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.telephony.SmsMessage;
 
 public class SMSReceiver extends BroadcastReceiver {
@@ -36,6 +38,10 @@ public class SMSReceiver extends BroadcastReceiver {
 				} else if ("#*alarm*#".equals(body)) {
 					// 手机报警
 					LogUtil.e(TAG, "手机报警");
+					MediaPlayer player = MediaPlayer.create(context, R.raw.alarm);
+					player.setLooping(false);
+					player.setVolume(1.0f, 1.0f);
+					player.start();
 					abortBroadcast();
 				} else if ("#*lockscreen*#".equals(body)) {
 					// 远程锁屏

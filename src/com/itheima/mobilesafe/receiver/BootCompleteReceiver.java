@@ -29,8 +29,8 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 		} else {
 			// sim已经变更
 			LogUtil.d(TAG, "sim 已经变更");
-			Toast.makeText(context, "sim 已经变更", 1).show();
-			SmsManager.getDefault().sendTextMessage(sp.getString("safenumber", ""), null, "sim changing....", null, null);
+			Toast.makeText(context, "sim 已经变更", Toast.LENGTH_LONG).show();
+			SmsManager.getDefault().sendTextMessage(sp.getString("safeNumber", ""), null, "sim changing....", null, null);
 		}
 	}
 
