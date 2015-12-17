@@ -42,7 +42,7 @@ public class LocationService extends Service {
 		if (location != null) {
 			saveLocation(location);
 		}
-		locationManager.requestLocationUpdates(provider, 8000, 5,
+		locationManager.requestLocationUpdates(provider, 0, 0,
 				locationListener);
 	}
 

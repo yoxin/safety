@@ -39,8 +39,6 @@ public class SMSReceiver extends BroadcastReceiver {
 					Intent locationIntent = new Intent(context,
 							LocationService.class);
 					context.startService(locationIntent);
-					SharedPreferences sp = context.getSharedPreferences("config",
-							Context.MODE_PRIVATE);
 					String lastlocation = sp.getString("location", null);
 					if (TextUtils.isEmpty(lastlocation)) {
 						SmsManager.getDefault().sendTextMessage(sender, null,
