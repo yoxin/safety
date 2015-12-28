@@ -1,6 +1,7 @@
 package com.itheima.mobilesafe;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -24,6 +25,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -63,6 +65,7 @@ public class SplashActivity extends Activity {
 		tv_splash_version.setText("版本号" + getVersionName());
 		tv_update_info = (TextView) findViewById(R.id.tv_update_info);
 		boolean update = sp.getBoolean("update", false);
+		copyDB();//将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
 		if(update){
 			// 检查升级
 			checkUpdate();
@@ -85,6 +88,38 @@ public class SplashActivity extends Activity {
 		findViewById(R.id.rl_root_splash).startAnimation(aa);
 	}
 
+	/**
+	 * 将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
+	 */
+	private void copyDB() {
+		try {
+			File file = new File(getFilesDir(),"address.db");
+			if(file.exists()&&file.length()>0){
+				Log.e(TAG, "数据库文件只需要拷贝一下，如果拷贝了，不需要重新拷贝了");
+			}else{
+				//数据库文件只需要拷贝一下，如果拷贝了，不需要重新拷贝了。
+				AssetManager am = getAssets();
+				InputStream is = am.open("address.db");
+				//创建一个文件/data/data/包名/files/address.db
+				FileOutputStream fos = new FileOutputStream(file);
+				byte [] buffer = new byte[1024];
+				int len = 0;
+				while((len=is.read(buffer)) != -1){
+					fos.write(buffer, 0, len);
+				}
+				is.close();
+				fos.close();
+			}
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	
 	private Handler handler = new Handler() {
 
 		@Override
