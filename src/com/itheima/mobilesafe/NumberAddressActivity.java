@@ -1,7 +1,5 @@
 package com.itheima.mobilesafe;
 
-import com.itheima.mobilesafe.db.dao.NumberAddressQueryUtils;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,10 +7,14 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.itheima.mobilesafe.db.dao.NumberAddressQueryUtils;
 
 public class NumberAddressActivity extends Activity {
 	
@@ -63,6 +65,8 @@ public class NumberAddressActivity extends Activity {
 		public void onClick(View v) {
 			String phone = edt_phone.getText().toString().trim();
 			if (TextUtils.isEmpty(phone)) {
+				Animation shake = AnimationUtils.loadAnimation(NumberAddressActivity.this, R.anim.shake);
+				edt_phone.startAnimation(shake);
 				Toast.makeText(NumberAddressActivity.this, "ÊÖ»úºÅÎª¿Õ", Toast.LENGTH_LONG).show();
 			} else {
 				String address = NumberAddressQueryUtils.queryNumber(phone);
