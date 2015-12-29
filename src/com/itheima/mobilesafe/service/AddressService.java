@@ -5,11 +5,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itheima.mobilesafe.R;
 import com.itheima.mobilesafe.db.dao.NumberAddressQueryUtils;
 
 public class AddressService extends Service {
@@ -17,6 +23,9 @@ public class AddressService extends Service {
 	private TelephonyManager tm;
 	MyPhoneStateListener listener;
 	private OutCallReceriver outCallReceriver;
+	//窗口管理器
+	private WindowManager wm;
+	private View view;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -34,7 +43,7 @@ public class AddressService extends Service {
 		public void onReceive(Context context, Intent intent) {
 			String phone = getResultData();
 			String address = NumberAddressQueryUtils.queryNumber(phone);
-			Toast.makeText(context, address, Toast.LENGTH_LONG).show();
+			myToast(address);
 		}
 		
 	}
@@ -50,9 +59,13 @@ public class AddressService extends Service {
 			case TelephonyManager.CALL_STATE_RINGING:// 当电话响起时，即来电时
 				String address = NumberAddressQueryUtils
 						.queryNumber(incomingNumber);
-				Toast.makeText(getApplicationContext(), address,
-						Toast.LENGTH_LONG).show();
+				myToast(address);
 				break;
+			case TelephonyManager.CALL_STATE_IDLE:
+				if (view != null) {
+					wm.removeView(view);
+					view = null;
+				}
 			default:
 				break;
 			}
@@ -63,6 +76,7 @@ public class AddressService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 		tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 		listener = new MyPhoneStateListener();
 		tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
@@ -71,6 +85,22 @@ public class AddressService extends Service {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
 		registerReceiver(outCallReceriver, filter);
+	}
+
+	public void myToast(String address) {
+		view = View.inflate(this, R.layout.toast_show_address, null);
+		view.setBackgroundResource(R.drawable.call_locate_blue);
+		TextView tv_address = (TextView)view.findViewById(R.id.tv_address);
+		tv_address.setText(address);
+		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+        params.format = PixelFormat.TRANSLUCENT;
+        params.type = WindowManager.LayoutParams.TYPE_TOAST;
+        wm.addView(view, params);
 	}
 
 	@Override
