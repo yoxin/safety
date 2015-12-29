@@ -1,24 +1,44 @@
 package com.itheima.mobilesafe.service;
 
-import com.itheima.mobilesafe.db.dao.NumberAddressQueryUtils;
-
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import com.itheima.mobilesafe.db.dao.NumberAddressQueryUtils;
+
 public class AddressService extends Service {
 
 	private TelephonyManager tm;
 	MyPhoneStateListener listener;
+	private OutCallReceriver outCallReceriver;
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
 
+	/**
+	 * 广播接收者：接受打电话的广播Toast拨出电话的地址归属地
+	 * @author YOXIN
+	 *
+	 */
+	class OutCallReceriver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String phone = getResultData();
+			String address = NumberAddressQueryUtils.queryNumber(phone);
+			Toast.makeText(context, address, Toast.LENGTH_LONG).show();
+		}
+		
+	}
+	
 	class MyPhoneStateListener extends PhoneStateListener {
 		/**
 		 * 当呼叫状态发生改变的时候回调该方法
@@ -46,6 +66,11 @@ public class AddressService extends Service {
 		tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 		listener = new MyPhoneStateListener();
 		tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
+		//代码注册广播接收者
+		outCallReceriver = new OutCallReceriver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+		registerReceiver(outCallReceriver, filter);
 	}
 
 	@Override
@@ -53,5 +78,8 @@ public class AddressService extends Service {
 		super.onDestroy();
 		tm.listen(listener, PhoneStateListener.LISTEN_NONE);
 		listener = null;
+		//代码取消注册广播接收着
+		unregisterReceiver(outCallReceriver);
+		outCallReceriver = null;
 	}
 }
