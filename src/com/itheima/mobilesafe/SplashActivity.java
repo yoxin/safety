@@ -37,6 +37,7 @@ import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itheima.mobilesafe.service.AddressService;
 import com.itheima.mobilesafe.utils.StreamTools;
 
 public class SplashActivity extends Activity {
@@ -64,8 +65,14 @@ public class SplashActivity extends Activity {
 		tv_splash_version = (TextView) findViewById(R.id.tv_splash_version);
 		tv_splash_version.setText("版本号" + getVersionName());
 		tv_update_info = (TextView) findViewById(R.id.tv_update_info);
-		boolean update = sp.getBoolean("update", false);
+		
 		copyDB();//将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
+		boolean showAddress = sp.getBoolean("showAddress", false);
+		if (showAddress) {
+			Intent intent = new Intent(this, AddressService.class);
+			startService(intent);
+		}
+		boolean update = sp.getBoolean("update", false);
 		if(update){
 			// 检查升级
 			checkUpdate();

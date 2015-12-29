@@ -14,7 +14,16 @@
         itheima:title="设置是否自动更新"
         itheima:desc_on="自动更新已经开启"
         itheima:desc_off="自动更新已经关闭"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </com.itheima.mobilesafe.ui.SettingItemView>
+    
+    <com.itheima.mobilesafe.ui.SettingItemView
+        android:id="@+id/siv_show_address"
+        itheima:title="设置号码归属地显示"
+        itheima:desc_on="号码归属地显示已经打开"
+        itheima:desc_off="号码归属地显示已经关闭"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </com.itheima.mobilesafe.ui.SettingItemView>
 
