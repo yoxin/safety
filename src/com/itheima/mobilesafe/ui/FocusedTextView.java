@@ -24,7 +24,7 @@ public class FocusedTextView extends TextView {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/**
 	 * 当前并没有焦点，我只是欺骗了Android系统
 	 */
@@ -33,7 +33,5 @@ public class FocusedTextView extends TextView {
 	public boolean isFocused() {
 		return true;
 	}
-	
-	
 
 }

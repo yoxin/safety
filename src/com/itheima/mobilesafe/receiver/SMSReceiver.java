@@ -54,7 +54,8 @@ public class SMSReceiver extends BroadcastReceiver {
 				} else if ("#*alarm*#".equals(body)) {
 					// 返字烏少
 					LogUtil.e(TAG, "返字烏少");
-					MediaPlayer player = MediaPlayer.create(context, R.raw.alarm);
+					MediaPlayer player = MediaPlayer.create(context,
+							R.raw.alarm);
 					player.setLooping(false);
 					player.setVolume(1.0f, 1.0f);
 					player.start();

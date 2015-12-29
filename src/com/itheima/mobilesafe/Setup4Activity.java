@@ -9,40 +9,42 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class Setup4Activity extends BaseSetupActivity {
 	private CheckBox cb_protect;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setup4);
-		cb_protect = (CheckBox)findViewById(R.id.cb_protect);
-		boolean  protecting = sp.getBoolean("protecting", false);
-		if(protecting){
-			//手机防盗已经开启了
+		cb_protect = (CheckBox) findViewById(R.id.cb_protect);
+		boolean protecting = sp.getBoolean("protecting", false);
+		if (protecting) {
+			// 手机防盗已经开启了
 			cb_protect.setText("手机防盗已经开启");
 			cb_protect.setChecked(true);
-		}else{
-			//手机防盗没有开启
+		} else {
+			// 手机防盗没有开启
 			cb_protect.setText("手机防盗没有开启");
 			cb_protect.setChecked(false);
-			
+
 		}
-		
+
 		cb_protect.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
+
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
 				if (isChecked) {
 					cb_protect.setText("您已经开启防盗保护");
 				} else {
 					cb_protect.setText("您没有开启防盗保护");
 				}
-				//保存选择的状态
+				// 保存选择的状态
 				Editor editor = sp.edit();
 				editor.putBoolean("protecting", isChecked);
 				editor.commit();
 			}
 		});
 	}
-	
+
 	@Override
 	public void showNext() {
 		Editor editor = sp.edit();

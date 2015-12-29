@@ -4,9 +4,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MD5Utils {
-	
+
 	/**
 	 * md5º”√‹∑Ω∑®
+	 * 
 	 * @param password
 	 * @return
 	 */

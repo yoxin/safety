@@ -21,7 +21,7 @@ public class Setup2Activity extends BaseSetupActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setup2);
-		telephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+		telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 		siv_setup2_sim = (SettingItemView) findViewById(R.id.siv_setup2_sim);
 		String sim = sp.getString("sim", null);
 		siv_setup2_sim.setChecked(!TextUtils.isEmpty(sim));
@@ -46,7 +46,7 @@ public class Setup2Activity extends BaseSetupActivity {
 
 	@Override
 	public void showNext() {
-		//取出SIM卡序列号
+		// 取出SIM卡序列号
 		String sim = sp.getString("sim", null);
 		if (TextUtils.isEmpty(sim)) {
 			Toast.makeText(this, "没有绑定SIM卡", Toast.LENGTH_LONG).show();
@@ -59,7 +59,7 @@ public class Setup2Activity extends BaseSetupActivity {
 	}
 
 	@Override
-	public void showPre() { 
+	public void showPre() {
 		Intent intent = new Intent(Setup2Activity.this, Setup1Activity.class);
 		startActivity(intent);
 		finish();

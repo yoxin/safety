@@ -11,9 +11,10 @@ public class AtoolsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_atools);
 	}
-	
+
 	/**
 	 * 点击事件，打开号码归属地查询功能
+	 * 
 	 * @param view
 	 */
 	public void numberQuery(View view) {

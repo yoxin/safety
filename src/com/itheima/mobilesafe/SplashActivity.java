@@ -65,31 +65,31 @@ public class SplashActivity extends Activity {
 		tv_splash_version = (TextView) findViewById(R.id.tv_splash_version);
 		tv_splash_version.setText("版本号" + getVersionName());
 		tv_update_info = (TextView) findViewById(R.id.tv_update_info);
-		
-		copyDB();//将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
+
+		copyDB();// 将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
 		boolean showAddress = sp.getBoolean("showAddress", false);
 		if (showAddress) {
 			Intent intent = new Intent(this, AddressService.class);
 			startService(intent);
 		}
 		boolean update = sp.getBoolean("update", false);
-		if(update){
+		if (update) {
 			// 检查升级
 			checkUpdate();
-		}else{
-			//自动升级已经关闭
+		} else {
+			// 自动升级已经关闭
 			handler.postDelayed(new Runnable() {
-				
+
 				@Override
 				public void run() {
-					//进入主页面
+					// 进入主页面
 					enterHome();
-					
+
 				}
 			}, 2000);
-			
+
 		}
-	
+
 		AlphaAnimation aa = new AlphaAnimation(0.2f, 1.0f);
 		aa.setDuration(500);
 		findViewById(R.id.rl_root_splash).startAnimation(aa);
@@ -100,33 +100,31 @@ public class SplashActivity extends Activity {
 	 */
 	private void copyDB() {
 		try {
-			File file = new File(getFilesDir(),"address.db");
-			if(file.exists()&&file.length()>0){
+			File file = new File(getFilesDir(), "address.db");
+			if (file.exists() && file.length() > 0) {
 				Log.e(TAG, "数据库文件只需要拷贝一下，如果拷贝了，不需要重新拷贝了");
-			}else{
-				//数据库文件只需要拷贝一下，如果拷贝了，不需要重新拷贝了。
+			} else {
+				// 数据库文件只需要拷贝一下，如果拷贝了，不需要重新拷贝了。
 				AssetManager am = getAssets();
 				InputStream is = am.open("address.db");
-				//创建一个文件/data/data/包名/files/address.db
+				// 创建一个文件/data/data/包名/files/address.db
 				FileOutputStream fos = new FileOutputStream(file);
-				byte [] buffer = new byte[1024];
+				byte[] buffer = new byte[1024];
 				int len = 0;
-				while((len=is.read(buffer)) != -1){
+				while ((len = is.read(buffer)) != -1) {
 					fos.write(buffer, 0, len);
 				}
 				is.close();
 				fos.close();
 			}
-			
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
-	
 	private Handler handler = new Handler() {
 
 		@Override
@@ -250,19 +248,19 @@ public class SplashActivity extends Activity {
 	 * 弹出升级对话框
 	 */
 	protected void showUpdateDialog() {
-		//this = Activity.this
+		// this = Activity.this
 		AlertDialog.Builder builder = new Builder(SplashActivity.this);
 		builder.setTitle("提示升级");
-//		builder.setCancelable(false);//强制升级
+		// builder.setCancelable(false);//强制升级
 		builder.setOnCancelListener(new OnCancelListener() {
-			
+
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				// TODO Auto-generated method stub
-				//进入主页面
+				// 进入主页面
 				enterHome();
 				dialog.dismiss();
-				
+
 			}
 		});
 		builder.setMessage(description);
@@ -277,49 +275,52 @@ public class SplashActivity extends Activity {
 					// afnal
 					FinalHttp finalhttp = new FinalHttp();
 					finalhttp.download(apkurl, Environment
-							.getExternalStorageDirectory().getAbsolutePath()+"/mobilesafe2.0.apk",
-							new AjaxCallBack<File>() {
+							.getExternalStorageDirectory().getAbsolutePath()
+							+ "/mobilesafe2.0.apk", new AjaxCallBack<File>() {
 
-								@Override
-								public void onFailure(Throwable t, int errorNo,
-										String strMsg) {
-									t.printStackTrace();
-									Toast.makeText(getApplicationContext(), "下载失败", 1).show();
-									super.onFailure(t, errorNo, strMsg);
-								}
+						@Override
+						public void onFailure(Throwable t, int errorNo,
+								String strMsg) {
+							t.printStackTrace();
+							Toast.makeText(getApplicationContext(), "下载失败", 1)
+									.show();
+							super.onFailure(t, errorNo, strMsg);
+						}
 
-								@Override
-								public void onLoading(long count, long current) {
-									// TODO Auto-generated method stub
-									super.onLoading(count, current);
-									tv_update_info.setVisibility(View.VISIBLE);
-									//当前下载百分比
-									int progress = (int) (current * 100 / count);
-									tv_update_info.setText("下载进度："+progress+"%");
-								}
+						@Override
+						public void onLoading(long count, long current) {
+							// TODO Auto-generated method stub
+							super.onLoading(count, current);
+							tv_update_info.setVisibility(View.VISIBLE);
+							// 当前下载百分比
+							int progress = (int) (current * 100 / count);
+							tv_update_info.setText("下载进度：" + progress + "%");
+						}
 
-								@Override
-								public void onSuccess(File t) {
-									// TODO Auto-generated method stub
-									super.onSuccess(t);
-									installAPK(t);
-								}
-								/**
-								 * 安装APK
-								 * @param t
-								 */
-								private void installAPK(File t) {
-								  Intent intent = new Intent();
-								  intent.setAction("android.intent.action.VIEW");
-								  intent.addCategory("android.intent.category.DEFAULT");
-								  intent.setDataAndType(Uri.fromFile(t), "application/vnd.android.package-archive");
-								  
-								  startActivity(intent);
-								  
-								}
-								
-							
-							});
+						@Override
+						public void onSuccess(File t) {
+							// TODO Auto-generated method stub
+							super.onSuccess(t);
+							installAPK(t);
+						}
+
+						/**
+						 * 安装APK
+						 * 
+						 * @param t
+						 */
+						private void installAPK(File t) {
+							Intent intent = new Intent();
+							intent.setAction("android.intent.action.VIEW");
+							intent.addCategory("android.intent.category.DEFAULT");
+							intent.setDataAndType(Uri.fromFile(t),
+									"application/vnd.android.package-archive");
+
+							startActivity(intent);
+
+						}
+
+					});
 				} else {
 					Toast.makeText(getApplicationContext(), "没有sdcard，请安装上在试",
 							0).show();

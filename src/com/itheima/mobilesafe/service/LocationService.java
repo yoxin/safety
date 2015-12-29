@@ -42,8 +42,8 @@ public class LocationService extends Service {
 		if (location != null) {
 			saveLocation(location);
 		}
-		locationManager.requestLocationUpdates(provider, 0, 0,
-				locationListener);
+		locationManager
+				.requestLocationUpdates(provider, 0, 0, locationListener);
 	}
 
 	private void saveLocation(Location location) {

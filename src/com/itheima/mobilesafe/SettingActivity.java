@@ -16,45 +16,46 @@ public class SettingActivity extends Activity {
 	private SettingItemView siv_update;
 	private SharedPreferences sp;
 	private SettingItemView siv_show_address;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setting);
 		sp = getSharedPreferences("config", MODE_PRIVATE);
-		//设置是否自动更新
+		// 设置是否自动更新
 		siv_update = (SettingItemView) findViewById(R.id.siv_update);
 
 		boolean update = sp.getBoolean("update", false);
-		if(update){
-			//自动升级已经开启
+		if (update) {
+			// 自动升级已经开启
 			siv_update.setChecked(true);
-		}else{
-			//自动升级已经关闭
+		} else {
+			// 自动升级已经关闭
 			siv_update.setChecked(false);
 		}
 		siv_update.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Editor editor = sp.edit();
-				//判断是否有选中
-				//已经打开自动升级了
-				if(siv_update.isChecked()){
+				// 判断是否有选中
+				// 已经打开自动升级了
+				if (siv_update.isChecked()) {
 					siv_update.setChecked(false);
 					editor.putBoolean("update", false);
-				}else{
-					//没有打开自动升级
+				} else {
+					// 没有打开自动升级
 					siv_update.setChecked(true);
 					editor.putBoolean("update", true);
 				}
 				editor.commit();
 			}
 		});
-		//设置号码归属地显示
-		siv_show_address = (SettingItemView)findViewById(R.id.siv_show_address);
+		// 设置号码归属地显示
+		siv_show_address = (SettingItemView) findViewById(R.id.siv_show_address);
 		final Intent intent = new Intent(this, AddressService.class);
 		siv_show_address.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Editor editor = sp.edit();
@@ -70,12 +71,13 @@ public class SettingActivity extends Activity {
 				editor.commit();
 			}
 		});
-		
+
 	}
-	
+
 	@Override
 	protected void onResume() {
-		if (ServiceUtils.isServiceRunning(this, "com.itheima.mobilesafe.service.AddressService")) {
+		if (ServiceUtils.isServiceRunning(this,
+				"com.itheima.mobilesafe.service.AddressService")) {
 			siv_show_address.setChecked(true);
 		} else {
 			siv_show_address.setChecked(false);

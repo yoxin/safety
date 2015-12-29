@@ -12,12 +12,12 @@ public class ModifyOffset {
 	static double[] X = new double[660 * 450];
 	static double[] Y = new double[660 * 450];
 
-
 	private ModifyOffset(InputStream inputStream) throws Exception {
 		init(inputStream);
 	}
 
-	public synchronized static ModifyOffset getInstance(InputStream is) throws Exception {
+	public synchronized static ModifyOffset getInstance(InputStream is)
+			throws Exception {
 		if (modifyOffset == null) {
 			modifyOffset = new ModifyOffset(is);
 		}
