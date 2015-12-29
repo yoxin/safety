@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
@@ -13,7 +13,6 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.itheima.mobilesafe.R;
 import com.itheima.mobilesafe.db.dao.NumberAddressQueryUtils;
@@ -26,6 +25,7 @@ public class AddressService extends Service {
 	//窗口管理器
 	private WindowManager wm;
 	private View view;
+	private SharedPreferences sp;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -61,7 +61,7 @@ public class AddressService extends Service {
 						.queryNumber(incomingNumber);
 				myToast(address);
 				break;
-			case TelephonyManager.CALL_STATE_IDLE:
+			case TelephonyManager.CALL_STATE_IDLE: // 电话空闲时，即挂掉电话时
 				if (view != null) {
 					wm.removeView(view);
 					view = null;
@@ -78,6 +78,7 @@ public class AddressService extends Service {
 		super.onCreate();
 		wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 		tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+		sp = getSharedPreferences("config", MODE_PRIVATE);
 		listener = new MyPhoneStateListener();
 		tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 		//代码注册广播接收者
@@ -89,7 +90,15 @@ public class AddressService extends Service {
 
 	public void myToast(String address) {
 		view = View.inflate(this, R.layout.toast_show_address, null);
-		view.setBackgroundResource(R.drawable.call_locate_blue);
+		//设置土司的背景风格
+		//"半透明","活力橙","卫士蓝","金属灰","苹果绿"
+		int[] color = {R.drawable.call_locate_white,
+				R.drawable.call_locate_orange,
+				R.drawable.call_locate_blue,
+				R.drawable.call_locate_gray,
+				R.drawable.call_locate_green};
+		int which = sp.getInt("which", 0);
+		view.setBackgroundResource(color[which]);
 		TextView tv_address = (TextView)view.findViewById(R.id.tv_address);
 		tv_address.setText(address);
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
