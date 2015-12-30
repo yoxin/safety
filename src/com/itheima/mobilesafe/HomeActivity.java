@@ -57,21 +57,23 @@ public class HomeActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				switch (position) {
-				case 8:// 进入设置中心
-					Intent intent = new Intent(HomeActivity.this,
-							SettingActivity.class);
-					startActivity(intent);
+				case 0:
+					showLostFindDialog();// 进入手机防盗的对话框；
+					break;
+				case 1://进入通讯卫士
+					Intent intent2 = new Intent(HomeActivity.this,
+							BlackNumberActivity.class);
+					startActivity(intent2);
 					break;
 				case 7:// 进入高级工具
 					Intent intent1 = new Intent(HomeActivity.this,
 							AtoolsActivity.class);
 					startActivity(intent1);
 					break;
-				case 0:
-					showLostFindDialog();// 进入手机防盗的对话框；
-					break;
-
-				default:
+				case 8:// 进入设置中心
+					Intent intent = new Intent(HomeActivity.this,
+							SettingActivity.class);
+					startActivity(intent);
 					break;
 				}
 
