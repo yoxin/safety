@@ -9,11 +9,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -106,6 +108,31 @@ public class AddressService extends Service {
 				R.drawable.call_locate_gray, R.drawable.call_locate_green };
 		int which = sp.getInt("which", 0);
 		view.setBackgroundResource(color[which]);
+		/**
+		 * 地址归属地双击事件
+		 */
+		final long[] mHit = new long[2];
+		view.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				System.arraycopy(mHit, 1, mHit, 0, mHit.length-1);
+				mHit[1] = SystemClock.uptimeMillis();
+				if (mHit[0] > mHit[1] - 500) {
+					//地址归属地居中
+					params.x = (wm.getDefaultDisplay().getWidth()-view.getWidth())/2;
+					params.y = (wm.getDefaultDisplay().getHeight()-view.getHeight())/2;
+					Editor editor = sp.edit();
+					editor.putInt("lastX", params.x);
+					editor.putInt("lastY", params.y);
+					editor.commit();
+					wm.updateViewLayout(view, params);
+				}
+			}
+		});
+		/**
+		 * s地址归属地触摸事件
+		 */
 		view.setOnTouchListener(new OnTouchListener() {
 			int startX = 0;
 			int startY = 0;
@@ -154,7 +181,7 @@ public class AddressService extends Service {
 				default:
 					break;
 				}
-				return true;
+				return false;
 			}
 		});
 		TextView tv_address = (TextView) view.findViewById(R.id.tv_address);
@@ -174,7 +201,9 @@ public class AddressService extends Service {
 		//view加载后调用，如果是第一次启动，在view加载完成后获取中间的位置
 		if (params.x == -1 && params.y == -1) {
 			view.post(new Runnable() {
-				
+				/**
+				 * 地址归属地居中
+				 */
 				@Override
 				public void run() {
 					params.x = (wm.getDefaultDisplay().getWidth()-view.getWidth())/2;
