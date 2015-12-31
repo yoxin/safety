@@ -45,9 +45,10 @@ public class BlackNumberDao {
 		SQLiteDatabase db = heaper.getReadableDatabase();
 		Cursor cursor = db.rawQuery("select * from blacknumber", null);
 		while (cursor.moveToNext()) {
+			Integer id = cursor.getInt(cursor.getColumnIndex("_id"));
 			String number = cursor.getString(cursor.getColumnIndex("number"));
 			String mode = cursor.getString(cursor.getColumnIndex("mode"));
-			BlackNumberInfo info = new BlackNumberInfo(number, mode);
+			BlackNumberInfo info = new BlackNumberInfo(number, mode, id);
 			list.add(info);
 		}
 		db.close();
@@ -101,4 +102,18 @@ public class BlackNumberDao {
 		db.close();
 	}
 	
+	/**
+	 * 通过Id更改数据
+	 * @param _id
+	 * @param NewNumber
+	 * @param NewMode
+	 */
+	public void updateById(Integer _id, String NewNumber, String NewMode) {
+		SQLiteDatabase db = heaper.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("mode", NewMode);
+		values.put("number", NewNumber);
+		db.update(TABLE, values, "_id = ?", new String[]{String.valueOf(_id)});
+		db.close();
+	}
 }
