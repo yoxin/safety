@@ -14,30 +14,37 @@ import com.itheima.mobilesafe.domain.BlackNumberInfo;
 public class BlackNumberDao {
 	BlackNumberDBOpenHeaper heaper;
 	private static String TABLE = "blacknumber";
+
 	public BlackNumberDao(Context context) {
 		if (heaper == null) {
 			heaper = new BlackNumberDBOpenHeaper(context);
 		}
 	}
-	
+
 	/**
 	 * 查询黑名单号码是否存在
-	 * @param number 手机号码
+	 * 
+	 * @param number
+	 *            手机号码
 	 * @return
 	 */
 	public boolean find(String number) {
 		SQLiteDatabase db = heaper.getReadableDatabase();
-		Cursor cursor = db.rawQuery("select * from blacknumber where number = ?", new String[]{number});
+		Cursor cursor = db.rawQuery(
+				"select * from blacknumber where number = ?",
+				new String[] { number });
+		boolean result = false;
 		if (cursor.moveToNext()) {
-			return true;
+			result = true;
 		}
 		db.close();
 		cursor.close();
 		return false;
 	}
-	
+
 	/**
 	 * 查找并返回全部数据
+	 * 
 	 * @return
 	 */
 	public List<BlackNumberInfo> findAll() {
@@ -55,17 +62,19 @@ public class BlackNumberDao {
 		cursor.close();
 		return list;
 	}
-	
+
 	/**
 	 * 删除黑名单号码对应数据
-	 * @param number 手机号码
+	 * 
+	 * @param number
+	 *            手机号码
 	 */
 	public void delete(String number) {
 		SQLiteDatabase db = heaper.getWritableDatabase();
-		db.delete(TABLE, "number = ?", new String[]{number});
+		db.delete(TABLE, "number = ?", new String[] { number });
 		db.close();
 	}
-	
+
 	/**
 	 * 删除全部数据
 	 */
@@ -74,11 +83,14 @@ public class BlackNumberDao {
 		db.delete(TABLE, null, null);
 		db.close();
 	}
-	
+
 	/**
 	 * 插入数据
-	 * @param number 手机号码
-	 * @param mode 模式
+	 * 
+	 * @param number
+	 *            手机号码
+	 * @param mode
+	 *            模式
 	 */
 	public void add(String number, String mode) {
 		SQLiteDatabase db = heaper.getWritableDatabase();
@@ -88,22 +100,26 @@ public class BlackNumberDao {
 		db.insert(TABLE, null, values);
 		db.close();
 	}
-	
+
 	/**
 	 * 插入数据
-	 * @param number 手机号码
-	 * @param NewMode 模式
+	 * 
+	 * @param number
+	 *            手机号码
+	 * @param NewMode
+	 *            模式
 	 */
 	public void update(String number, String NewMode) {
 		SQLiteDatabase db = heaper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put("mode", NewMode);
-		db.update(TABLE, values, "number = ?", new String[]{number});
+		db.update(TABLE, values, "number = ?", new String[] { number });
 		db.close();
 	}
-	
+
 	/**
 	 * 通过Id更改数据
+	 * 
 	 * @param _id
 	 * @param NewNumber
 	 * @param NewMode
@@ -113,7 +129,29 @@ public class BlackNumberDao {
 		ContentValues values = new ContentValues();
 		values.put("mode", NewMode);
 		values.put("number", NewNumber);
-		db.update(TABLE, values, "_id = ?", new String[]{String.valueOf(_id)});
+		db.update(TABLE, values, "_id = ?",
+				new String[] { String.valueOf(_id) });
 		db.close();
+	}
+
+	/**
+	 * 查询mode
+	 * 
+	 * @param number
+	 *            电话号码
+	 * @return
+	 */
+	public String findMode(String number) {
+		SQLiteDatabase db = heaper.getReadableDatabase();
+		Cursor cursor = db.rawQuery(
+				"select mode from blacknumber where number = ?",
+				new String[] { number });
+		String result = null;
+		if (cursor.moveToNext()) {
+			result = cursor.getString(0);
+		}
+		db.close();
+		cursor.close();
+		return result;
 	}
 }

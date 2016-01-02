@@ -38,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itheima.mobilesafe.service.AddressService;
+import com.itheima.mobilesafe.service.CallSmsSafeService;
 import com.itheima.mobilesafe.utils.StreamTools;
 
 public class SplashActivity extends Activity {
@@ -67,9 +68,16 @@ public class SplashActivity extends Activity {
 		tv_update_info = (TextView) findViewById(R.id.tv_update_info);
 
 		copyDB();// 将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
+		//开启地址归属地显示服务
 		boolean showAddress = sp.getBoolean("showAddress", false);
 		if (showAddress) {
 			Intent intent = new Intent(this, AddressService.class);
+			startService(intent);
+		}
+		//开启黑名单拦截服务
+		boolean isCallSmsSafe = sp.getBoolean("callSmsSafe", false);
+		if (isCallSmsSafe) {
+			Intent intent = new Intent(this, CallSmsSafeService.class);
 			startService(intent);
 		}
 		boolean update = sp.getBoolean("update", false);

@@ -33,4 +33,13 @@
         android:layout_height="wrap_content">
     </com.itheima.mobilesafe.ui.SettingClickView>
     
+    <com.itheima.mobilesafe.ui.SettingItemView
+        android:id="@+id/siv_callsms_safe"
+        itheima:title="设置安全拦截功能"
+        itheima:desc_on="黑名单拦截功能已经开启"
+        itheima:desc_off="黑名单拦截功能已经关闭"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </com.itheima.mobilesafe.ui.SettingItemView>
+    
 </LinearLayout>

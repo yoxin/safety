@@ -64,6 +64,7 @@
         </receiver>
         <service android:name="com.itheima.mobilesafe.service.LocationService"></service>
         <service android:name="com.itheima.mobilesafe.service.AddressService"></service>
+        <service android:name="com.itheima.mobilesafe.service.CallSmsSafeService"></service>
     </application>
 
 </manifest>

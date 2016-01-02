@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.itheima.mobilesafe.service.AddressService;
+import com.itheima.mobilesafe.service.CallSmsSafeService;
 import com.itheima.mobilesafe.ui.SettingClickView;
 import com.itheima.mobilesafe.ui.SettingItemView;
 import com.itheima.mobilesafe.utils.ServiceUtils;
@@ -21,6 +22,7 @@ public class SettingActivity extends Activity {
 	private SharedPreferences sp;
 	private SettingItemView siv_show_address;
 	private SettingClickView scv_changebg;
+	private SettingItemView siv_callsms_safe;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,15 +109,44 @@ public class SettingActivity extends Activity {
 				builder.show();
 			}
 		});
+		// 设置黑名单拦截功能
+		siv_callsms_safe = (SettingItemView) findViewById(R.id.siv_callsms_safe);
+		final Intent callSmsSafeIntent = new Intent(this, CallSmsSafeService.class);
+		siv_callsms_safe.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Editor editor = sp.edit();
+				if (siv_callsms_safe.isChecked()) {
+					siv_callsms_safe.setChecked(false);
+					stopService(callSmsSafeIntent);
+					editor.putBoolean("callSmsSafe", false);
+				} else {
+					siv_callsms_safe.setChecked(true);
+					startService(callSmsSafeIntent);
+					editor.putBoolean("callSmsSafe", true);
+				}
+				editor.commit();
+			}
+		});
 	}
 
 	@Override
 	protected void onResume() {
+		//归属地
 		if (ServiceUtils.isServiceRunning(this,
 				"com.itheima.mobilesafe.service.AddressService")) {
 			siv_show_address.setChecked(true);
 		} else {
 			siv_show_address.setChecked(false);
+		}
+		
+		//黑名单
+		if (ServiceUtils.isServiceRunning(this,
+				"com.itheima.mobilesafe.service.CallSmsSafeService")) {
+			siv_callsms_safe.setChecked(true);
+		} else {
+			siv_callsms_safe.setChecked(false);
 		}
 		super.onResume();
 	}
