@@ -4,10 +4,15 @@ import java.lang.reflect.Method;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
+import android.provider.CallLog;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
@@ -43,7 +48,6 @@ public class CallSmsSafeService extends Service {
 				String sender = message.getOriginatingAddress();
 				String mode = dao.findMode(sender);
 				if ("2".equals(mode) || "3".equals(mode)) {
-					LogUtil.d(TAG, "黑名单联系人，短信拦截");
 					abortBroadcast();
 				}
 			}
@@ -87,6 +91,7 @@ public class CallSmsSafeService extends Service {
 			case TelephonyManager.CALL_STATE_RINGING://电话响起
 				String mode = dao.findMode(incomingNumber);
 				if ("1".equals(mode) || "3".equals(mode)) {
+					getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true, new CallLogObserver(incomingNumber, new Handler()));
 					endCall();
 				}
 				break;
@@ -109,5 +114,28 @@ public class CallSmsSafeService extends Service {
 			e.printStackTrace();
 		}
 		
+	}
+
+	private class CallLogObserver extends ContentObserver {
+
+		String incomingNumber;
+		
+		public CallLogObserver(String incomingNumber, Handler handler) {
+			super(handler);
+			this.incomingNumber = incomingNumber;
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			getContentResolver().unregisterContentObserver(this);
+			deleteCallLog(incomingNumber);
+			super.onChange(selfChange);
+		}
+		
+	}
+	
+	public void deleteCallLog(String incomingNumber) {
+		ContentResolver resolver = getContentResolver();
+		resolver.delete(CallLog.Calls.CONTENT_URI, "number =?", new String[]{incomingNumber});
 	}
 }
