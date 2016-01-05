@@ -15,5 +15,21 @@
         android:clickable="true"
         android:onClick="numberQuery"
         />
+    
+    <TextView 
+        style="@style/text_content_style"
+        android:drawableLeft="@android:drawable/ic_menu_camera"
+        android:text="短信备份"
+        android:clickable="true"
+        android:onClick="smsBackup"
+        />
+    
+    <TextView 
+        style="@style/text_content_style"
+        android:drawableLeft="@android:drawable/ic_menu_camera"
+        android:text="短信还原"
+        android:clickable="true"
+        android:onClick="smsRestore"
+        />
 
 </LinearLayout>
