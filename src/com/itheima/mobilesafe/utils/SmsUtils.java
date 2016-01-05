@@ -14,23 +14,34 @@ import android.os.Environment;
 import android.util.Xml;
 
 public class SmsUtils {
-	
+
+	private static final String TAG = "SmsUtils";
+
 	/**
 	 * 短信备份
+	 * 
 	 * @param context
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public static void  backup(Context context) throws Exception {
+	public static void backup(Context context, ProgressCallBack progress)
+			throws Exception {
 		ContentResolver resolver = context.getContentResolver();
-		File file = new File(Environment.getExternalStorageDirectory(), "smsBackup.xml"); 	
+		File file = new File(Environment.getExternalStorageDirectory(),
+				"smsBackup.xml");
 		FileOutputStream fos = new FileOutputStream(file);
 		XmlSerializer serializer = Xml.newSerializer();
 		serializer.setOutput(fos, "utf-8");
 		serializer.startDocument("utf-8", true);
 		serializer.startTag(null, "smss");
 		Uri uri = Uri.parse("content://sms/");
-		Cursor cursor = resolver.query(uri, new String[]{"body", "address", "type", "date"}, null, null, null);
+		Cursor cursor = resolver.query(uri, new String[] { "body", "address",
+				"type", "date" }, null, null, null);
+		int max = cursor.getCount();
+		progress.setMax(max);
+		serializer.attribute(null, "max", String.valueOf(max));
+		int progressValue = 0;
 		while (cursor.moveToNext()) {
+			Thread.sleep(500);
 			serializer.startTag(null, "sms");
 			serializer.startTag(null, "body");
 			serializer.text(cursor.getString(0));
@@ -45,10 +56,32 @@ public class SmsUtils {
 			serializer.text(cursor.getString(3));
 			serializer.endTag(null, "date");
 			serializer.endTag(null, "sms");
+			progressValue++;
+			LogUtil.d(TAG, progressValue + "");
+			progress.setProgress(progressValue);
 		}
 		cursor.close();
 		serializer.endTag(null, "smss");
 		serializer.endDocument();
 		fos.close();
 	}
+
+	public interface ProgressCallBack {
+		/**
+		 * 设置进度条的最大值
+		 * 
+		 * @param max
+		 *            最大值
+		 */
+		void setMax(int max);
+
+		/**
+		 * 设置进度条的进度
+		 * 
+		 * @param progress
+		 */
+		void setProgress(int progress);
+
+	}
+
 }
