@@ -1,12 +1,18 @@
 package com.itheima.mobilesafe.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlSerializer;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -84,4 +90,78 @@ public class SmsUtils {
 
 	}
 
+	/**
+	 * 还原短信
+	 * 
+	 * @param context
+	 * @param flag
+	 *            是否删除原来的短信
+	 * @param progress
+	 *            进度条接口
+	 * @throws Exception
+	 */
+	public static void restore(Context context, boolean flag,
+			ProgressCallBack progress) throws Exception {
+		ContentResolver resolver = context.getContentResolver();
+		Uri uri = Uri.parse("content://sms/");
+		// 1.读取sd卡上的xml文件
+		File file = new File(Environment.getExternalStorageDirectory(),
+				"smsBackup.xml");
+		FileInputStream fis = new FileInputStream(file);
+		XmlPullParser parser = Xml.newPullParser();
+		parser.setInput(fis, "utf-8");
+		// 删除旧短信
+		if (flag) {
+			resolver.delete(uri, null, null);
+		}
+		int eventType = parser.getEventType();
+		String body = null;
+		String address = null;
+		String type = null;
+		String date = null;
+		int progressValue = 0;
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			String name = parser.getName();
+			switch (eventType) {
+			case XmlPullParser.START_TAG:
+				if (name.equals("smss")) {
+					// 2.读取max
+					String max = parser.getAttributeValue(null, "max");
+					// 设置进度条最大值
+					progress.setMax(Integer.valueOf(max));
+					// 3.读取每一条信息，body,address,type,date
+				} else if (name.equals("body")) {
+					body = parser.nextText();
+					LogUtil.d(TAG, "body:" + body);
+				} else if (name.equals("address")) {
+					address = parser.nextText();
+					LogUtil.d(TAG, "address:" + address);
+				} else if (name.equals("type")) {
+					type = parser.nextText();
+					LogUtil.d(TAG, "type:" + type);
+				} else if (name.equals("date")) {
+					date = parser.nextText();
+					LogUtil.d(TAG, "date:" + date);
+				}
+				break;
+			case XmlPullParser.END_TAG:
+				// 4.把短信插入到系统短信应用中
+				if (name.equals("sms")) {
+					ContentValues values = new ContentValues();
+					values.put("body", body);
+					values.put("address", address);
+					values.put("type", type);
+					values.put("date", date);
+					resolver.insert(uri, values);
+					// 5.设置进度条进度
+					progressValue++;
+					progress.setProgress(progressValue);
+				}
+			default:
+				break;
+			}
+			eventType = parser.next();
+		}
+
+	}
 }

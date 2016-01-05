@@ -1,5 +1,7 @@
 package com.itheima.mobilesafe;
 
+import java.io.FileNotFoundException;
+
 import com.itheima.mobilesafe.utils.LogUtil;
 import com.itheima.mobilesafe.utils.SmsUtils;
 import com.itheima.mobilesafe.utils.SmsUtils.ProgressCallBack;
@@ -13,12 +15,12 @@ import android.view.View;
 import android.widget.Toast;
 
 public class AtoolsActivity extends Activity {
-	
+
 	protected static final String TAG = "AtoolsActivity";
-	private ProgressDialog pd_Backup;//短信备份进度条
-	private ProgressDialog pd_Restore;//短信还原进度条
+	private ProgressDialog pd_Backup;// 短信备份进度条
+	private ProgressDialog pd_Restore;// 短信还原进度条
 	private Context context;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,7 +37,7 @@ public class AtoolsActivity extends Activity {
 		Intent intent = new Intent(this, NumberAddressActivity.class);
 		startActivity(intent);
 	}
-	
+
 	/**
 	 * 点击事件，启动短信备份功能
 	 * 
@@ -47,17 +49,17 @@ public class AtoolsActivity extends Activity {
 		pd_Backup.setMessage("短信备份");
 		pd_Backup.show();
 		new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				try {
 					SmsUtils.backup(context, new ProgressCallBack() {
-						
+
 						@Override
 						public void setProgress(int progress) {
 							pd_Backup.setProgress(progress);
 						}
-						
+
 						@Override
 						public void setMax(int max) {
 							pd_Backup.setMax(max);
@@ -66,14 +68,16 @@ public class AtoolsActivity extends Activity {
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							Toast.makeText(context, "备份成功", Toast.LENGTH_LONG).show();
+							Toast.makeText(context, "备份成功", Toast.LENGTH_LONG)
+									.show();
 						}
 					});
 				} catch (Exception e) {
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							Toast.makeText(context, "备份失败", Toast.LENGTH_LONG).show();
+							Toast.makeText(context, "备份失败", Toast.LENGTH_LONG)
+									.show();
 						}
 					});
 					e.printStackTrace();
@@ -83,7 +87,58 @@ public class AtoolsActivity extends Activity {
 				}
 			}
 		}).start();
-		
+
 	}
-	
+
+	/**
+	 * 点击事件，启动短信还原功能
+	 * 
+	 * @param view
+	 */
+	public void smsRestore(View view) {
+		pd_Restore = new ProgressDialog(context);
+		pd_Restore.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		pd_Restore.setMessage("短信还原");
+		pd_Restore.show();
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					SmsUtils.restore(context, true, new ProgressCallBack() {
+
+						@Override
+						public void setProgress(int progress) {
+							pd_Restore.setProgress(progress);
+						}
+
+						@Override
+						public void setMax(int max) {
+							pd_Restore.setMax(max);
+						}
+					});
+					runOnUiThread(new Runnable() {
+						public void run() {
+							Toast.makeText(context, "还原成功", Toast.LENGTH_LONG)
+									.show();
+						}
+					});
+				} catch (FileNotFoundException fnfe) {
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(context, "找不到短信备份，请先备份", Toast.LENGTH_LONG).show();
+						}
+					});
+					fnfe.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					pd_Restore.dismiss();
+				}
+
+			}
+		}).start();
+
+	}
 }
