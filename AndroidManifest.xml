@@ -55,6 +55,7 @@
         <activity android:name="com.itheima.mobilesafe.AtoolsActivity" />
         <activity android:name="com.itheima.mobilesafe.NumberAddressActivity" />
         <activity android:name="com.itheima.mobilesafe.BlackNumberActivity" />
+        <activity android:name="com.itheima.mobilesafe.AppManagerActivity" />
 
         <receiver android:name="com.itheima.mobilesafe.receiver.BootCompleteReceiver" >
             <intent-filter>
