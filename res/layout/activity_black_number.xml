@@ -4,26 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-    <RelativeLayout 
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
+
         <TextView
-        style="@style/text_title_style"
-        android:text="黑名单列表" />
-        <Button 
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            style="@style/text_title_style"
+            android:text="黑名单列表" />
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="添加"
-            android:onClick="addBlackNumber"/>
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:onClick="addBlackNumber"
+            android:text="添加" />
     </RelativeLayout>
-    
 
-    <ListView 
-        android:id="@+id/list_black_number"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:id="@+id/ll_loading"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正在读取数据" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/list_black_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
 </LinearLayout>

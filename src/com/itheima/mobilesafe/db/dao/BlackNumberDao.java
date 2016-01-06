@@ -62,6 +62,37 @@ public class BlackNumberDao {
 		cursor.close();
 		return list;
 	}
+	
+	/**
+	 * 从offset指定的位置开始查询limit条信息
+	 * @param limit 查询的信息的条目
+	 * @param offset 查询开始的位置
+	 * @return 查询到的数据
+	 */
+	public List<BlackNumberInfo> findAll(int limit, int offset) {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		List<BlackNumberInfo> list = new ArrayList<BlackNumberInfo>();
+		SQLiteDatabase db = heaper.getReadableDatabase();
+		Cursor cursor = db.rawQuery(
+				"select * from blacknumber limit ? offset ?",
+				new String[] {String.valueOf(limit), String.valueOf(offset)});
+		while (cursor.moveToNext()) {
+			Integer id = cursor.getInt(cursor.getColumnIndex("_id"));
+			String number = cursor.getString(cursor.getColumnIndex("number"));
+			String mode = cursor.getString(cursor.getColumnIndex("mode"));
+			BlackNumberInfo info = new BlackNumberInfo(number, mode, id);
+			list.add(info);
+		}
+		db.close();
+		cursor.close();
+		return list;
+	}
+	
 
 	/**
 	 * 删除黑名单号码对应数据
@@ -154,4 +185,6 @@ public class BlackNumberDao {
 		cursor.close();
 		return result;
 	}
+	
+	
 }
