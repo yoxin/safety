@@ -11,10 +11,14 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,7 +39,10 @@ public class AppManagerActivity extends Activity {
 	private Context context;
 	private LinearLayout ll_app_loading;
 	private List<AppInfo> data;
+	private List<AppInfo> userData;
+	private List<AppInfo> systemData;
 	private ListView lv_app;
+	private TextView tv_status;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,7 @@ public class AppManagerActivity extends Activity {
 		tv_avail_sd = (TextView) findViewById(R.id.tv_avail_sd);
 		ll_app_loading =(LinearLayout)findViewById(R.id.ll_app_loading);
 		lv_app = (ListView) findViewById(R.id.lv_app);
+		tv_status = (TextView) findViewById(R.id.tv_status);
 		String availSD = Formatter.formatFileSize(context, getAvailSpace(Environment.getExternalStorageDirectory().getAbsolutePath()));
 		String availRom = Formatter.formatFileSize(context, getAvailSpace(Environment.getDataDirectory().getAbsolutePath()));
 		tv_avail_sd.setText("SD内存："+availSD);
@@ -66,6 +74,31 @@ public class AppManagerActivity extends Activity {
 				});
 			}
 		}).start();
+		/**
+		 * 滑动监听器
+		 */
+		lv_app.setOnScrollListener(new OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				
+			}
+			/**
+			 * 屏幕滑动时，回调该方法
+			 */
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				if (userData != null && systemData != null) {
+					if (firstVisibleItem <= userData.size()) {
+						tv_status.setText("用户程序（"+userData.size()+")");
+					} else {
+						tv_status.setText("用户程序（"+systemData.size()+")");
+					}
+				}
+				
+			}
+		});
 		lv_app.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -86,8 +119,6 @@ public class AppManagerActivity extends Activity {
 		Context context;
 		int resourceId;
 		List<AppInfo> data;
-		List<AppInfo> userData;
-		List<AppInfo> systemData;
 		int userSize;
 		int systemSize;
 		
