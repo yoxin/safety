@@ -8,6 +8,7 @@ public class AppInfo {
 	private String name;
 	private String packageName;
 	private boolean inRom;
+	private boolean isUserApp;
 	public Drawable getIcon() {
 		return icon;
 	}
@@ -32,9 +33,16 @@ public class AppInfo {
 	public void setInRom(boolean inRom) {
 		this.inRom = inRom;
 	}
+	public boolean isUserApp() {
+		return isUserApp;
+	}
+	public void setUserApp(boolean isUserApp) {
+		this.isUserApp = isUserApp;
+	}
 	@Override
 	public String toString() {
-		return "appInfo [name=" + name + ", packageName=" + packageName
-				+ ", inRom=" + inRom + "]";
+		return "AppInfo [name=" + name + ", packageName=" + packageName
+				+ ", inRom=" + inRom + ", isUserApp=" + isUserApp + "]";
 	}
+	
 }

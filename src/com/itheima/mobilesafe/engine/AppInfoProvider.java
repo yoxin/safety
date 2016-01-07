@@ -22,6 +22,21 @@ public class AppInfoProvider {
 			String name = ai.loadLabel(pm).toString();
 			Drawable icon = ai.loadIcon(pm);
 			AppInfo info = new AppInfo();
+			int flag = ai.flags;
+			if ((flag&ApplicationInfo.FLAG_EXTERNAL_STORAGE)==0) {
+				//内部存储
+				info.setInRom(true);
+			} else {
+				//外部存储
+				info.setInRom(false);
+			}
+			if ((flag&ApplicationInfo.FLAG_SYSTEM)==0) {
+				//用户应用
+				info.setUserApp(true);
+			} else {
+				//系统应用
+				info.setUserApp(false);
+			}
 			info.setIcon(icon);
 			info.setName(name);
 			info.setPackageName(packageName);
