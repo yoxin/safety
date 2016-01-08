@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
@@ -56,6 +57,7 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 	private LinearLayout ll_app_delete;
 	private LinearLayout ll_app_share;
 	private AppInfo appInfo;//获取listView点击的item信息
+	private AppAdapter appAdapter;//listView的自定义适配器
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,23 +77,7 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 						.getDataDirectory().getAbsolutePath()));
 		tv_avail_sd.setText("SD内存：" + availSD);
 		tv_avail_rom.setText("手机内存：" + availRom);
-		ll_app_loading.setVisibility(View.VISIBLE);// 设置加载UI可见
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				data = AppInfoProvider.getAppInfos(context);// 获取数据
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						ll_app_loading.setVisibility(View.INVISIBLE);// 设置加载UI不可见
-						lv_app.setAdapter(new AppAdapter(context,
-								R.layout.list_item_appinfo, data));
-					}
-				});
-			}
-		}).start();
+		fillData();
 		/**
 		 * 滑动监听器
 		 */
@@ -124,16 +110,15 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				int userSize = userData.size();
 				if (position == 0) {
 					return;
-				} else if (position == userSize + 1) {
+				} else if (position == userData.size() + 1) {
 					return;
-				} else if (position <= userSize) {
+				} else if (position <= userData.size()) {
 					int newPosition = position - 1;
 					appInfo = userData.get(newPosition);
 				} else {
-					int newPosition = position - userSize - 2;
+					int newPosition = position - userData.size() - 2;
 					appInfo = systemData.get(newPosition);
 				}
 				dismissPopupWindow();
@@ -186,6 +171,40 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 		});
 	}
 
+	private void fillData() {
+		ll_app_loading.setVisibility(View.VISIBLE);// 设置加载UI可见
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				data = AppInfoProvider.getAppInfos(context);// 获取数据
+				userData = new ArrayList<AppInfo>();
+				systemData = new ArrayList<AppInfo>();
+				for (AppInfo appInfo : data) {
+					if (appInfo.isUserApp()) {
+						userData.add(appInfo);
+					} else {
+						systemData.add(appInfo);
+					}
+				}
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						if (appAdapter == null) {
+							appAdapter = new AppAdapter(context,
+									R.layout.list_item_appinfo);
+							lv_app.setAdapter(appAdapter);
+						} else {
+							appAdapter.notifyDataSetChanged();
+						}
+						ll_app_loading.setVisibility(View.INVISIBLE);// 设置加载UI不可见
+						
+					}
+				});
+			}
+		}).start();
+	}
+
 	private void dismissPopupWindow() {
 		// 销毁气泡窗口
 		if (popupWindow != null && popupWindow.isShowing()) {
@@ -204,25 +223,10 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 
 		Context context;
 		int resourceId;
-		List<AppInfo> data;
-		int userSize;
-		int systemSize;
 
-		public AppAdapter(Context context, int resourceId, List<AppInfo> data) {
+		public AppAdapter(Context context, int resourceId) {
 			this.context = context;
 			this.resourceId = resourceId;
-			this.data = data;
-			userData = new ArrayList<AppInfo>();
-			systemData = new ArrayList<AppInfo>();
-			for (AppInfo appInfo : data) {
-				if (appInfo.isUserApp()) {
-					userData.add(appInfo);
-				} else {
-					systemData.add(appInfo);
-				}
-			}
-			userSize = userData.size();
-			systemSize = systemData.size();
 		}
 
 		@Override
@@ -232,12 +236,12 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 
 		@Override
 		public AppInfo getItem(int position) {
-			if (position == 0 || position == userSize + 1) {
+			if (position == 0 || position == userData.size() + 1) {
 				return null;
-			} else if (position <= userSize) {
+			} else if (position <= userData.size()) {
 				return userData.get(position - 1);
 			} else {
-				return systemData.get(position - userSize - 2);
+				return systemData.get(position - userData.size() - 2);
 			}
 		}
 
@@ -250,13 +254,13 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (position == 0) {
 				TextView tv = new TextView(getContext());
-				tv.setText("用户程序(" + userSize + ")");
+				tv.setText("用户程序(" + userData.size() + ")");
 				tv.setTextColor(Color.WHITE);
 				tv.setBackgroundColor(Color.GRAY);
 				return tv;
-			} else if (position == userSize + 1) {
+			} else if (position == userData.size() + 1) {
 				TextView tv = new TextView(getContext());
-				tv.setText("系统程序(" + systemSize + ")");
+				tv.setText("系统程序(" + systemData.size() + ")");
 				tv.setTextColor(Color.WHITE);
 				tv.setBackgroundColor(Color.GRAY);
 				return tv;
@@ -325,10 +329,12 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.ll_app_start:
 			LogUtil.d(TAG, "启动app");
-			startApp();//启动app
+			startApp();//启动APP
 			break;
 		case R.id.ll_app_delete:
 			LogUtil.d(TAG, "卸载app");
+			deleteApp();
+			dismissPopupWindow();
 			break;
 		case R.id.ll_app_share:
 			LogUtil.d(TAG, "分享app");
@@ -339,7 +345,48 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 	}
 
 	/**
-	 *  启动app
+	 * 卸载APP
+	 */
+	private void deleteApp() {
+		if (appInfo.isUserApp()) {
+			/*<activity android:name=".UninstallerActivity"
+	                android:configChanges="orientation|keyboardHidden"
+	                android:theme="@style/TallTitleBarTheme">
+	            <intent-filter>
+	                <action android:name="android.intent.action.VIEW" />
+	                <action android:name="android.intent.action.DELETE" />
+	                <category android:name="android.intent.category.DEFAULT" />
+	                <data android:scheme="package" />
+	            </intent-filter>
+	        </activity>*/
+			Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_MAIN);
+			intent.setAction(Intent.ACTION_DELETE);
+			intent.addCategory(Intent.CATEGORY_DEFAULT);
+			String uriStr = "package:"+appInfo.getPackageName();
+			intent.setData(Uri.parse(uriStr));
+			startActivityForResult(intent, 0);
+		} else {
+			Toast.makeText(context, "卸载应用程序需要Root权限", Toast.LENGTH_LONG).show();
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		//刷新界面
+		switch (requestCode) {
+		case 0:
+			fillData();
+			break;
+
+		default:
+			break;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+	
+	/**
+	 *  启动APP
 	 */
 	private void startApp() {
 		PackageManager pm = getPackageManager();
@@ -349,5 +396,11 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 		} else {
 			Toast.makeText(context, "无法启动", Toast.LENGTH_LONG).show();
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		fillData();
+		super.onResume();
 	}
 }
