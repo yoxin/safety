@@ -5,6 +5,8 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -29,12 +32,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.itheima.mobilesafe.domain.AppInfo;
 import com.itheima.mobilesafe.engine.AppInfoProvider;
 import com.itheima.mobilesafe.utils.DensityUtil;
+import com.itheima.mobilesafe.utils.LogUtil;
 
-public class AppManagerActivity extends Activity {
+public class AppManagerActivity extends Activity implements OnClickListener {
 
 	private static final String TAG = "AppManagerActivity";
 	private TextView tv_avail_rom;
@@ -46,7 +51,11 @@ public class AppManagerActivity extends Activity {
 	private List<AppInfo> systemData;
 	private ListView lv_app;
 	private TextView tv_status;
-	PopupWindow popupWindow;
+	private PopupWindow popupWindow;
+	private LinearLayout ll_app_start;
+	private LinearLayout ll_app_delete;
+	private LinearLayout ll_app_share;
+	private AppInfo appInfo;//获取listView点击的item信息
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +125,6 @@ public class AppManagerActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				int userSize = userData.size();
-				AppInfo appInfo;
 				if (position == 0) {
 					return;
 				} else if (position == userSize + 1) {
@@ -137,6 +145,15 @@ public class AppManagerActivity extends Activity {
 				 */
 				LinearLayout contentView = (LinearLayout) View.inflate(context,
 						R.layout.popup_app_item, null);
+				ll_app_start = (LinearLayout) contentView
+						.findViewById(R.id.ll_app_start);
+				ll_app_delete = (LinearLayout) contentView
+						.findViewById(R.id.ll_app_delete);
+				ll_app_share = (LinearLayout) contentView
+						.findViewById(R.id.ll_app_share);
+				ll_app_start.setOnClickListener(AppManagerActivity.this);
+				ll_app_delete.setOnClickListener(AppManagerActivity.this);
+				ll_app_share.setOnClickListener(AppManagerActivity.this);
 				popupWindow = new PopupWindow(contentView,
 						ViewGroup.LayoutParams.WRAP_CONTENT,
 						ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -261,6 +278,7 @@ public class AppManagerActivity extends Activity {
 					view = convertView;
 					viewHolder = (ViewHolder) view.getTag();
 				}
+				//获取appInfo
 				AppInfo appInfo = getItem(position);
 				viewHolder.icon.setImageDrawable(appInfo.getIcon());
 				String name = appInfo.getName();
@@ -297,5 +315,39 @@ public class AppManagerActivity extends Activity {
 	protected void onDestroy() {
 		dismissPopupWindow();
 		super.onDestroy();
+	}
+
+	/**
+	 * 布局对应的点击事件
+	 */
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.ll_app_start:
+			LogUtil.d(TAG, "启动app");
+			startApp();//启动app
+			break;
+		case R.id.ll_app_delete:
+			LogUtil.d(TAG, "卸载app");
+			break;
+		case R.id.ll_app_share:
+			LogUtil.d(TAG, "分享app");
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 *  启动app
+	 */
+	private void startApp() {
+		PackageManager pm = getPackageManager();
+		Intent intent = pm.getLaunchIntentForPackage(appInfo.getPackageName());
+		if (intent != null) {
+			startActivity(intent);
+		} else {
+			Toast.makeText(context, "无法启动", Toast.LENGTH_LONG).show();
+		}
 	}
 }
