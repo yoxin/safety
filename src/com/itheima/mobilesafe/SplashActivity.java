@@ -22,10 +22,12 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -66,15 +68,17 @@ public class SplashActivity extends Activity {
 		tv_splash_version = (TextView) findViewById(R.id.tv_splash_version);
 		tv_splash_version.setText("版本号" + getVersionName());
 		tv_update_info = (TextView) findViewById(R.id.tv_update_info);
+		// 创建快捷图标
+		installShortcut();
 
 		copyDB();// 将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
-		//开启地址归属地显示服务
+		// 开启地址归属地显示服务
 		boolean showAddress = sp.getBoolean("showAddress", false);
 		if (showAddress) {
 			Intent intent = new Intent(this, AddressService.class);
 			startService(intent);
 		}
-		//开启黑名单拦截服务
+		// 开启黑名单拦截服务
 		boolean isCallSmsSafe = sp.getBoolean("callSmsSafe", false);
 		if (isCallSmsSafe) {
 			Intent intent = new Intent(this, CallSmsSafeService.class);
@@ -101,6 +105,39 @@ public class SplashActivity extends Activity {
 		AlphaAnimation aa = new AlphaAnimation(0.2f, 1.0f);
 		aa.setDuration(500);
 		findViewById(R.id.rl_root_splash).startAnimation(aa);
+	}
+
+	/**
+	 * 创建桌面图标
+	 * 注意添加权限
+	 */
+	private void installShortcut() {
+		/*
+		 * <receiver
+		 * android:name="com.android.launcher2.InstallShortcutReceiver"
+		 * android:permission
+		 * ="com.android.launcher.permission.INSTALL_SHORTCUT"> <intent-filter>
+		 * <action android:name="com.android.launcher.action.INSTALL_SHORTCUT"
+		 * /> </intent-filter> </receiver>
+		 */
+		if (sp.getBoolean("shortCut", false)) {// 防止多次创建
+			return;
+		}
+		Intent intent = new Intent();
+		intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "手机卫士");
+		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, BitmapFactory
+				.decodeResource(getResources(), R.drawable.ic_launcher));
+		Intent shortCutIntent = new Intent();
+		shortCutIntent.setAction(Intent.ACTION_MAIN);
+		shortCutIntent.addCategory(Intent.CATEGORY_DEFAULT);
+		shortCutIntent.setClassName(getPackageName(),
+				"com.itheima.mobilesafe.SplashActivity");
+		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortCutIntent);
+		sendBroadcast(intent);
+		Editor editor = sp.edit();
+		editor.putBoolean("shortCut", true);
+		editor.commit();
 	}
 
 	/**
