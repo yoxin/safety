@@ -6,33 +6,33 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.itheima.mobilesafe.domain.AppInfo;
 import com.itheima.mobilesafe.engine.AppInfoProvider;
-import com.itheima.mobilesafe.utils.LogUtil;
+import com.itheima.mobilesafe.utils.DensityUtil;
 
 public class AppManagerActivity extends Activity {
 
@@ -129,29 +129,51 @@ public class AppManagerActivity extends Activity {
 					appInfo = systemData.get(newPosition);
 				}
 				dismissPopupWindow();
-				TextView contentView = new TextView(context);
-				contentView.setText(appInfo.getPackageName());
-				contentView.setTextColor(Color.BLACK);
-				contentView.setBackgroundColor(Color.RED);
+				/*
+				 * TextView contentView = new TextView(context);
+				 * contentView.setText(appInfo.getPackageName());
+				 * contentView.setTextColor(Color.BLACK);
+				 * contentView.setBackgroundColor(Color.RED);
+				 */
+				LinearLayout contentView = (LinearLayout) View.inflate(context,
+						R.layout.popup_app_item, null);
 				popupWindow = new PopupWindow(contentView,
 						ViewGroup.LayoutParams.WRAP_CONTENT,
 						ViewGroup.LayoutParams.WRAP_CONTENT);
+				// 播放动画的窗体必须要有背景颜色，可以指定为透明颜色
+				popupWindow.setBackgroundDrawable(new ColorDrawable(
+						Color.TRANSPARENT));
 				int[] location = new int[2];
+				// 获取控件坐标
 				view.getLocationInWindow(location);
-				int x = location[0];
+				int x = DensityUtil.dip2px(context, 30f);
 				int y = location[1];
-				popupWindow.showAtLocation(parent, Gravity.TOP | Gravity.LEFT, x, y);
+				popupWindow.showAtLocation(parent, Gravity.TOP | Gravity.LEFT,
+						x, y);
+				// 设置缩放动画
+				ScaleAnimation sa = new ScaleAnimation(0.3f, 1.0f, 0.3f, 1.0f,
+						Animation.RELATIVE_TO_SELF, 0,
+						Animation.RELATIVE_TO_SELF, 0.5f);
+				// 设置动画时长
+				sa.setDuration(300);
+				// 设置透明渐变动画
+				AlphaAnimation aa = new AlphaAnimation(0.5f, 1.0f);
+				// 设置动画时长
+				aa.setDuration(300);
+				// 设置动画集合
+				AnimationSet set = new AnimationSet(false);
+				set.addAnimation(aa);
+				set.addAnimation(sa);
+				contentView.startAnimation(set);
 			}
-
-			
 		});
 	}
-	
+
 	private void dismissPopupWindow() {
-		//销毁气泡窗口
+		// 销毁气泡窗口
 		if (popupWindow != null && popupWindow.isShowing()) {
-			 popupWindow.dismiss();
-			 popupWindow = null;
+			popupWindow.dismiss();
+			popupWindow = null;
 		}
 	}
 
@@ -270,7 +292,7 @@ public class AppManagerActivity extends Activity {
 		int blockSize = fs.getBlockSize();
 		return availableBlocks * blockSize;
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		dismissPopupWindow();
