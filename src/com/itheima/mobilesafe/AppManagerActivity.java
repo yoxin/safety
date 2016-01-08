@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.provider.ContactsContract.Data;
 import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -338,10 +339,23 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.ll_app_share:
 			LogUtil.d(TAG, "分享app");
+			shareApp();
 			break;
 		default:
 			break;
 		}
+	}
+
+	/**
+	 * 分享APP
+	 */
+	private void shareApp() {
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_SEND);
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT, "推荐一款软件，名称叫做："+appInfo.getName());
+		startActivity(intent);
 	}
 
 	/**
