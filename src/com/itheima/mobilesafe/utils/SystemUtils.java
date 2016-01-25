@@ -6,12 +6,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.itheima.mobilesafe.domain.TaskInfo;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
+import android.content.pm.PackageManager;
 
 public class SystemUtils {
 	/**
@@ -60,7 +64,6 @@ public class SystemUtils {
 			e.printStackTrace();
 			return 0;
 		}
-		
-		
 	}
+	
 }
