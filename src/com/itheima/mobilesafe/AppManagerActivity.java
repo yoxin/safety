@@ -273,11 +273,11 @@ public class AppManagerActivity extends Activity implements OnClickListener {
 							resourceId, null);
 					viewHolder = new ViewHolder();
 					viewHolder.icon = (ImageView) view
-							.findViewById(R.id.iv_app_icon);
+							.findViewById(R.id.iv_task_icon);
 					viewHolder.name = (TextView) view
-							.findViewById(R.id.tv_app_name);
+							.findViewById(R.id.tv_task_name);
 					viewHolder.isrom = (TextView) view
-							.findViewById(R.id.tv_app_isrom);
+							.findViewById(R.id.tv_task_isrom);
 					view.setTag(viewHolder);
 				} else {
 					view = convertView;

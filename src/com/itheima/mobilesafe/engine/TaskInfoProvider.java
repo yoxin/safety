@@ -11,9 +11,15 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Debug.MemoryInfo;
 
+import com.itheima.mobilesafe.R;
 import com.itheima.mobilesafe.domain.TaskInfo;
 
 public class TaskInfoProvider {
+	/**
+	 * 获取手机的进程信息
+	 * @param context
+	 * @return
+	 */
 	public static List<TaskInfo> getTaskprovider(Context context) {
 		List<TaskInfo> taskInfos = new ArrayList<TaskInfo>();
 		ActivityManager am = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
@@ -35,8 +41,13 @@ public class TaskInfoProvider {
 					taskInfo.setUserTack(false);
 				}
 			} catch (NameNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				/**
+				 * 找不到的包名，如android.process.acore; android.process.media; 
+				 * 他们属于c语言写的，为他们添加默认的信息
+				 */
+				taskInfo.setIcon(context.getResources().getDrawable(R.drawable.ic_launcher));
+				taskInfo.setName(packageName);
 			}
 			taskInfos.add(taskInfo);
 		}

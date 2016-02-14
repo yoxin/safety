@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/iv_task_icon"
@@ -29,6 +28,16 @@
         android:text="手机内存"
         android:textColor="@android:color/darker_gray"
         android:textSize="18sp" />
+    
+    <CheckBox 
+        android:id="@+id/cb_status"
+        android:clickable="false"
+        android:focusable="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        />
 
     <ImageView
         android:layout_width="match_parent"

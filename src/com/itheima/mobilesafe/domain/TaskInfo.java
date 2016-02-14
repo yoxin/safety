@@ -8,6 +8,8 @@ public class TaskInfo {
 	private String packname;
 	private boolean isUserTack;
 	private long memSize;
+	//listview里面的item里面的checkbox是否被选中
+	private boolean isChecked;
 	public Drawable getIcon() {
 		return icon;
 	}
@@ -37,6 +39,12 @@ public class TaskInfo {
 	}
 	public void setMemSize(long memSize) {
 		this.memSize = memSize;
+	}
+	public boolean isChecked() {
+		return isChecked;
+	}
+	public void setChecked(boolean isChecked) {
+		this.isChecked = isChecked;
 	}
 	@Override
 	public String toString() {
