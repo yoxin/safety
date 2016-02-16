@@ -2,20 +2,21 @@ package com.itheima.mobilesafe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -163,8 +164,14 @@ public class TaskManagerActivity extends Activity {
 
 		@Override
 		public int getCount() {
-			// 所有进程数据+两条TextView小条目
-			return allTaskInfos.size() + 2;
+			SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
+			if (sp.getBoolean("showSystem", false)) {
+				// 所有进程数目+两条TextView小条目
+				return allTaskInfos.size() + 2;
+			} else {
+				// 用户进程数目+一条TextView小条目
+				return userTaskInfos.size() + 1;
+			}
 		}
 
 		@Override
@@ -308,11 +315,14 @@ public class TaskManagerActivity extends Activity {
 				+ Formatter.formatFileSize(context, totalMem));
 		adapter.notifyDataSetChanged();
 		// toast清理的提示
-		Toast.makeText(
-				context,
-				"清理了" + count + "个进程"
-						+ Formatter.formatFileSize(context, clearMem) + "内存",
-				Toast.LENGTH_LONG).show();
+		if (count > 0) {
+			Toast.makeText(
+					context,
+					"清理了" + count + "个进程"
+							+ Formatter.formatFileSize(context, clearMem) + "内存",
+					Toast.LENGTH_LONG).show();
+		}
+		
 	}
 
 	/**
@@ -321,6 +331,14 @@ public class TaskManagerActivity extends Activity {
 	 * @param view
 	 */
 	public void interSetting(View view) {
+		Intent intent = new Intent(TaskManagerActivity.this,
+				TaskSettingActivity.class);
+		startActivityForResult(intent, 0);
+	}
 
+	@Override
+	protected void onRestart() {
+		fillData();
+		super.onRestart();
 	}
 }

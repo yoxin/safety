@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        style="@style/text_title_style"
+        android:text="进程管理设置" />
+
+    <CheckBox 
+        android:id="@+id/cb_show_system_process"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="显示系统进程"/>
+    
+    <CheckBox 
+        android:id="@+id/cb_screen_off_clear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="锁屏清理进程"/>
+
+</LinearLayout>

@@ -59,6 +59,7 @@
         <activity android:name="com.itheima.mobilesafe.BlackNumberActivity" />
         <activity android:name="com.itheima.mobilesafe.AppManagerActivity" />
         <activity android:name="com.itheima.mobilesafe.TaskManagerActivity" />
+        <activity android:name="com.itheima.mobilesafe.TaskSettingActivity" />
 
         <receiver android:name="com.itheima.mobilesafe.receiver.BootCompleteReceiver" >
             <intent-filter>
@@ -73,6 +74,7 @@
         <service android:name="com.itheima.mobilesafe.service.LocationService"></service>
         <service android:name="com.itheima.mobilesafe.service.AddressService"></service>
         <service android:name="com.itheima.mobilesafe.service.CallSmsSafeService"></service>
+        <service android:name="com.itheima.mobilesafe.service.AutoClearService"></service>
     </application>
 
 </manifest>
