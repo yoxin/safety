@@ -22,7 +22,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 		sp = context.getSharedPreferences("config", context.MODE_PRIVATE);
 		tm = (TelephonyManager) context
 				.getSystemService(context.TELEPHONY_SERVICE);
-		String saveSim = sp.getString("sim", "") + "a";
+		String saveSim = sp.getString("sim", "");
 		String realSim = tm.getSimSerialNumber();
 		if (saveSim.equals(realSim)) {
 			// sim没有变更

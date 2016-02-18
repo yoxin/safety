@@ -7,6 +7,7 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="16" />
+
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
         android:targetPackage="com.itheima.mobilesafe" />
@@ -23,20 +24,21 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
-	<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-	<uses-permission android:name="android.permission.CALL_PHONE" />
-	<uses-permission android:name="android.permission.READ_SMS" />
-	<uses-permission android:name="android.permission.WRITE_SMS" />
-	<uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
-	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-	
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <uses-library android:name="android.test.runner" />
+
         <activity
             android:name="com.itheima.mobilesafe.SplashActivity"
             android:label="@string/app_name" >
@@ -71,18 +73,31 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.keniu.security.process.ProcessWidget">
+        <receiver android:name="com.itheima.mobilesafe.receiver.KillAllReceiver" >
+            <intent-filter>
+                <action android:name="com.itheima.mobilesafe.killall" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.itheima.mobilesafe.receiver.MyWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/process_widget_provider" />
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/process_widget_provider" />
         </receiver>
-        
-        <service android:name="com.itheima.mobilesafe.service.LocationService"></service>
-        <service android:name="com.itheima.mobilesafe.service.AddressService"></service>
-        <service android:name="com.itheima.mobilesafe.service.CallSmsSafeService"></service>
-        <service android:name="com.itheima.mobilesafe.service.AutoClearService"></service>
-        
+
+        <service android:name="com.itheima.mobilesafe.service.LocationService" >
+        </service>
+        <service android:name="com.itheima.mobilesafe.service.AddressService" >
+        </service>
+        <service android:name="com.itheima.mobilesafe.service.CallSmsSafeService" >
+        </service>
+        <service android:name="com.itheima.mobilesafe.service.AutoClearService" >
+        </service>
+        <service android:name="com.itheima.mobilesafe.service.UpdateWidgetService" >
+        </service>
     </application>
 
 </manifest>

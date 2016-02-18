@@ -109,4 +109,5 @@
 03_带checkbox的listview  
 04_进程管理器实现，checkbox的全选和反选   
 05_锁屏清理进程  
-06_进程清理的小控件widget  
+06_进程清理的小控件widget(界面)  
+07_进程清理的小控件widget(功能)  
