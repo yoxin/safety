@@ -24,7 +24,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 				.getSystemService(context.TELEPHONY_SERVICE);
 		String saveSim = sp.getString("sim", "");
 		String realSim = tm.getSimSerialNumber();
-		if (saveSim.equals(realSim)) {
+		if (saveSim.isEmpty() || saveSim.equals(realSim)) {
 			// sim没有变更
 		} else {
 			// sim已经变更
