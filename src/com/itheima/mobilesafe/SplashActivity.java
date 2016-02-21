@@ -70,8 +70,10 @@ public class SplashActivity extends Activity {
 		tv_update_info = (TextView) findViewById(R.id.tv_update_info);
 		// 创建快捷图标
 		installShortcut();
-
-		copyDB();// 将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
+		// 将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
+		copyDB("address.db");
+		copyDB("antivirus.db");
+		
 		// 开启地址归属地显示服务
 		boolean showAddress = sp.getBoolean("showAddress", false);
 		if (showAddress) {
@@ -143,11 +145,11 @@ public class SplashActivity extends Activity {
 	/**
 	 * 将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
 	 */
-	private void copyDB() {
+	private void copyDB(String name) {
 		try {
-			File file = new File(getFilesDir(), "address.db");
+			File file = new File(getFilesDir(), name);
 			if (file.exists() && file.length() > 0) {
-				Log.e(TAG, "数据库文件只需要拷贝一下，如果拷贝了，不需要重新拷贝了");
+				Log.e(TAG, "数据库文件"+name+"只需要拷贝一下，如果拷贝了，不需要重新拷贝了");
 			} else {
 				// 数据库文件只需要拷贝一下，如果拷贝了，不需要重新拷贝了。
 				AssetManager am = getAssets();

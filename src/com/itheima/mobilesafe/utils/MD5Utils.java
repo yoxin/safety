@@ -40,4 +40,8 @@ public class MD5Utils {
 
 	}
 
+	public static void getFileMd5(String sourceDir) {
+		
+	}
+
 }
