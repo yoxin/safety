@@ -153,7 +153,7 @@ public class SplashActivity extends Activity {
 			} else {
 				// 数据库文件只需要拷贝一下，如果拷贝了，不需要重新拷贝了。
 				AssetManager am = getAssets();
-				InputStream is = am.open("address.db");
+				InputStream is = am.open(name);
 				// 创建一个文件/data/data/包名/files/address.db
 				FileOutputStream fos = new FileOutputStream(file);
 				byte[] buffer = new byte[1024];
