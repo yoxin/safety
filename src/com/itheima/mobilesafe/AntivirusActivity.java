@@ -139,6 +139,9 @@ public class AntivirusActivity extends Activity {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
+//					LogUtil.d(TAG, scanInfo.toString());
+//					LogUtil.d(TAG, md5);
 				}
 				// …®√ËΩ· ¯
 				msg = Message.obtain();

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -39,9 +40,18 @@ import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.itheima.mobilesafe.db.dao.AntivirusQueryUtils;
+import com.itheima.mobilesafe.domain.Virus;
 import com.itheima.mobilesafe.service.AddressService;
 import com.itheima.mobilesafe.service.CallSmsSafeService;
+import com.itheima.mobilesafe.utils.LogUtil;
 import com.itheima.mobilesafe.utils.StreamTools;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
 
 public class SplashActivity extends Activity {
 
@@ -73,6 +83,7 @@ public class SplashActivity extends Activity {
 		// 将assets目录下的数据库拷贝到data/data/com.itheima.mobilesafe/files目录下
 		copyDB("address.db");
 		copyDB("antivirus.db");
+		udataVirus(); //更新病毒数据库
 		
 		// 开启地址归属地显示服务
 		boolean showAddress = sp.getBoolean("showAddress", false);
@@ -107,6 +118,37 @@ public class SplashActivity extends Activity {
 		AlphaAnimation aa = new AlphaAnimation(0.2f, 1.0f);
 		aa.setDuration(500);
 		findViewById(R.id.rl_root_splash).startAnimation(aa);
+	}
+
+	/**
+	 * 更新病毒数据库
+	 */
+	private void udataVirus() {
+		HttpUtils http = new HttpUtils();
+		http.send(HttpMethod.GET, getString(R.string.url_updata_virus), new RequestCallBack<String>() {
+
+			@Override
+			public void onFailure(HttpException arg0, String arg1) {
+				
+			}
+
+			@Override
+			public void onSuccess(ResponseInfo<String> arg) {
+				LogUtil.d(TAG, arg.result.toString());
+				List<Virus> VirusInfos = JSON.parseArray(arg.result.toString(), Virus.class);
+				for (Virus virus : VirusInfos) {
+					LogUtil.d(TAG, virus.toString());
+					if (AntivirusQueryUtils.addVirus(virus)) {
+						LogUtil.d(TAG, "成功插入病毒数据");
+					} else {
+						LogUtil.d(TAG, "失败插入病毒数据");
+					}
+				}
+				
+			}
+
+			
+		});
 	}
 
 	/**

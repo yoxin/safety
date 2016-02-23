@@ -11,33 +11,33 @@ public class LogUtil {
 	public static final int NOTHING = 6;
 	public static final int LEVEL = VERBOSE;
 
-	public static void v(String tag, String msg) {
+	public static void v(String TAG, String msg) {
 		if (LEVEL <= VERBOSE) {
-			Log.v(tag, msg);
+			Log.v(TAG, msg);
 		}
 	}
 
-	public static void d(String tag, String msg) {
+	public static void d(String TAG, String msg) {
 		if (LEVEL <= DEBUG) {
-			Log.d(tag, msg);
+			Log.d(TAG, msg);
 		}
 	}
 
-	public static void i(String tag, String msg) {
+	public static void i(String TAG, String msg) {
 		if (LEVEL <= INFO) {
-			Log.i(tag, msg);
+			Log.i(TAG, msg);
 		}
 	}
 
-	public static void w(String tag, String msg) {
+	public static void w(String TAG, String msg) {
 		if (LEVEL <= WARN) {
-			Log.w(tag, msg);
+			Log.w(TAG, msg);
 		}
 	}
 
-	public static void e(String tag, String msg) {
+	public static void e(String TAG, String msg) {
 		if (LEVEL <= ERROR) {
-			Log.e(tag, msg);
+			Log.e(TAG, msg);
 		}
 	}
 

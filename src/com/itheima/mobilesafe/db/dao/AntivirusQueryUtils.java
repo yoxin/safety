@@ -1,7 +1,10 @@
 package com.itheima.mobilesafe.db.dao;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.itheima.mobilesafe.domain.Virus;
 
 /**
  * 病毒数据库查询工具
@@ -39,4 +42,24 @@ public class AntivirusQueryUtils {
 
 		return isVirus;
 	}
+
+	public static boolean addVirus(Virus virus) {
+		boolean result = false;
+		SQLiteDatabase database = SQLiteDatabase.openDatabase(path, null,
+				SQLiteDatabase.OPEN_READWRITE);
+		if (!isVirus(virus.getMd5())) {
+			ContentValues values = new ContentValues();
+			values.put("md5", virus.getMd5());
+			values.put("type", 6);
+			values.put("name", "defaultName");
+			values.put("desc", virus.getDesc());
+			database.insert("datable", null, values);
+			result = true;
+		} else {
+			result = false;
+		}
+		database.close();
+		return result;
+	}
+	
 }

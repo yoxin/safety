@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="serverurl">http://192.168.1.254:8080/updateinfo.html</string>
+    <string name="serverurl">http://192.168.191.2:8080/updateinfo.html</string>
+    <string name="url_updata_virus">http://192.168.191.2:8080/virus.json</string>
     
 </resources>
