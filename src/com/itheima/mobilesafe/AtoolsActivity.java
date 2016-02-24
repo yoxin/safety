@@ -127,7 +127,8 @@ public class AtoolsActivity extends Activity {
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							Toast.makeText(context, "找不到短信备份，请先备份", Toast.LENGTH_LONG).show();
+							Toast.makeText(context, "找不到短信备份，请先备份",
+									Toast.LENGTH_LONG).show();
 						}
 					});
 					fnfe.printStackTrace();
@@ -140,5 +141,14 @@ public class AtoolsActivity extends Activity {
 			}
 		}).start();
 
+	}
+
+	/**
+	 * 点击事件，程序锁
+	 * @param view
+	 */
+	public void appLock(View view) {
+		Intent intent = new Intent(AtoolsActivity.this, AppLockActivity.class);
+		startActivity(intent);
 	}
 }

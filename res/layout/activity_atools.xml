@@ -31,5 +31,13 @@
         android:clickable="true"
         android:onClick="smsRestore"
         />
+    
+    <TextView 
+        style="@style/text_content_style"
+        android:drawableLeft="@android:drawable/ic_menu_camera"
+        android:text="程序锁"
+        android:clickable="true"
+        android:onClick="appLock"
+        />
 
 </LinearLayout>
