@@ -52,14 +52,14 @@ public class AppLockActivity extends FragmentActivity implements
 			// 更新UI
 			tv_lock.setBackgroundResource(R.drawable.tab_right_pressed);
 			tv_unlock.setBackgroundResource(R.drawable.tab_left_default);
-			transaction.replace(R.id.fl_content, lockFragment);
+			transaction.replace(R.id.fl_content, lockFragment).commit();
 			LogUtil.d(TAG, "切换到已加锁界面");
 			break;
 		case R.id.tv_unlock:
 			// 更新UI
 			tv_lock.setBackgroundResource(R.drawable.tab_right_default);
 			tv_unlock.setBackgroundResource(R.drawable.tab_left_pressed);
-			transaction.replace(R.id.fl_content, unlockFragment);
+			transaction.replace(R.id.fl_content, unlockFragment).commit();
 			LogUtil.d(TAG, "切换到未加锁界面");
 			break;
 		default:

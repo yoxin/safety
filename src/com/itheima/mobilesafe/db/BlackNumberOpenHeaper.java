@@ -6,9 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class BlackNumberDBOpenHeaper extends SQLiteOpenHelper {
+public class BlackNumberOpenHeaper extends SQLiteOpenHelper {
 
-	public BlackNumberDBOpenHeaper(Context context) {
+	public BlackNumberOpenHeaper(Context context) {
 		super(context, "blacknumber.db", null, 1);
 	}
 

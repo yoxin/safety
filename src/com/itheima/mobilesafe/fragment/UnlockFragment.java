@@ -1,5 +1,6 @@
 package com.itheima.mobilesafe.fragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.itheima.mobilesafe.R;
+import com.itheima.mobilesafe.db.dao.AppLockDao;
 import com.itheima.mobilesafe.domain.AppInfo;
 import com.itheima.mobilesafe.engine.AppInfoProvider;
 
@@ -25,7 +27,9 @@ public class UnlockFragment extends Fragment {
 	private ListView lv_unlock;
 	private Context context;
 	private List<AppInfo> appInfos;
+	private List<AppInfo> lockAppInfos;
 	private UnLockAdapter adapter;
+	private AppLockDao dao;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,6 +44,15 @@ public class UnlockFragment extends Fragment {
 	@Override
 	public void onStart() {
 		appInfos = AppInfoProvider.getAppInfos(context);
+		lockAppInfos = new ArrayList<AppInfo>();
+		for (AppInfo info : appInfos) {
+			String packageName = info.getPackageName();
+			dao = new AppLockDao(context);
+			if (dao.find(packageName)) {
+				lockAppInfos.add(info);
+			}
+		}
+		appInfos.removeAll(lockAppInfos);
 		adapter = new UnLockAdapter();
 		lv_unlock.setAdapter(adapter);
 		super.onStart();
@@ -80,7 +93,7 @@ public class UnlockFragment extends Fragment {
 				view = convertView;
 				holder = (ViewHolder) view.getTag();
 			}
-			AppInfo info = (AppInfo) getItem(position);
+			final AppInfo info = (AppInfo) getItem(position);
 			holder.iv_icon.setBackgroundDrawable(info.getIcon());
 			holder.tv_name.setText(info.getName());
 			/**
@@ -92,6 +105,7 @@ public class UnlockFragment extends Fragment {
 				public void onClick(View v) {
 					// 更新数据和UI
 					appInfos.remove(position);
+					dao.insert(info.getPackageName());
 					adapter.notifyDataSetChanged();
 				}
 			});

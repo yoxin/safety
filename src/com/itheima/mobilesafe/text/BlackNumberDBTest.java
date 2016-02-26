@@ -6,7 +6,7 @@ import java.util.Random;
 
 import android.test.AndroidTestCase;
 
-import com.itheima.mobilesafe.db.BlackNumberDBOpenHeaper;
+import com.itheima.mobilesafe.db.BlackNumberOpenHeaper;
 import com.itheima.mobilesafe.db.dao.BlackNumberDao;
 import com.itheima.mobilesafe.domain.BlackNumberInfo;
 import com.itheima.mobilesafe.utils.LogUtil;
@@ -14,7 +14,7 @@ import com.itheima.mobilesafe.utils.LogUtil;
 public class BlackNumberDBTest extends AndroidTestCase {
 	private static final String TAG = "BlackNumberDBTest";
 	public void textCreatTable() throws Exception {
-		BlackNumberDBOpenHeaper heaper = new BlackNumberDBOpenHeaper(
+		BlackNumberOpenHeaper heaper = new BlackNumberOpenHeaper(
 				getContext());
 		heaper.getWritableDatabase();
 	}

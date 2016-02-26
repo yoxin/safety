@@ -8,16 +8,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.itheima.mobilesafe.db.BlackNumberDBOpenHeaper;
+import com.itheima.mobilesafe.db.BlackNumberOpenHeaper;
 import com.itheima.mobilesafe.domain.BlackNumberInfo;
 
 public class BlackNumberDao {
-	BlackNumberDBOpenHeaper heaper;
+	BlackNumberOpenHeaper heaper;
 	private static String TABLE = "blacknumber";
 
 	public BlackNumberDao(Context context) {
 		if (heaper == null) {
-			heaper = new BlackNumberDBOpenHeaper(context);
+			heaper = new BlackNumberOpenHeaper(context);
 		}
 	}
 
