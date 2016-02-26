@@ -42,7 +42,7 @@ public class AppLockActivity extends FragmentActivity implements
 		lockFragment = new LockFragment();
 		unlockFragment = new UnlockFragment();
 		// Ìæ»»½çÃæ
-		transaction.replace(R.id.fl_content, unlockFragment);
+		transaction.replace(R.id.fl_content, unlockFragment).commit();
 	}
 
 	@Override
