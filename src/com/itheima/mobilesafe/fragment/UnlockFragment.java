@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -79,7 +83,7 @@ public class UnlockFragment extends Fragment {
 		@Override
 		public View getView(final int position, View convertView,
 				ViewGroup parent) {
-			View view;
+			final View view;
 			ViewHolder holder;
 			if (convertView == null) {
 				view = LayoutInflater.from(context).inflate(
@@ -103,10 +107,33 @@ public class UnlockFragment extends Fragment {
 
 				@Override
 				public void onClick(View v) {
-					// 更新数据和UI
-					appInfos.remove(position);
-					dao.insert(info.getPackageName());
-					adapter.notifyDataSetChanged();
+					// 创建点击动画
+					TranslateAnimation animation = new TranslateAnimation(
+							Animation.RELATIVE_TO_SELF, 0,
+							Animation.RELATIVE_TO_SELF, 1.0f,
+							Animation.RELATIVE_TO_SELF, 0,
+							Animation.RELATIVE_TO_SELF, 0);
+					animation.setDuration(3000);
+					view.startAnimation(animation);
+
+					new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							SystemClock.sleep(3000);
+							// 更新数据和UI
+							getActivity().runOnUiThread(new Runnable() {
+
+								@Override
+								public void run() {
+									appInfos.remove(position);
+									dao.insert(info.getPackageName());
+									adapter.notifyDataSetChanged();
+								}
+							});
+
+						}
+					}).start();
 				}
 			});
 			return view;
