@@ -21,7 +21,7 @@ public class AppLockActivity extends FragmentActivity implements
 	private TextView tv_lock;
 	private LockFragment lockFragment;
 	private UnlockFragment unlockFragment;
-	private FragmentTransaction transaction;
+	private FragmentManager fragmentManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +36,8 @@ public class AppLockActivity extends FragmentActivity implements
 		tv_lock = (TextView) findViewById(R.id.tv_lock);
 		tv_unlock.setOnClickListener(this);
 		tv_lock.setOnClickListener(this);
-		// 获取FragMent的管理器
-		FragmentManager FragmentManager = getSupportFragmentManager();
-		transaction = FragmentManager.beginTransaction();
+		fragmentManager = getSupportFragmentManager();
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		lockFragment = new LockFragment();
 		unlockFragment = new UnlockFragment();
 		// 替换界面
@@ -47,6 +46,7 @@ public class AppLockActivity extends FragmentActivity implements
 
 	@Override
 	public void onClick(View v) {
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		switch (v.getId()) {
 		case R.id.tv_lock:
 			// 更新UI
