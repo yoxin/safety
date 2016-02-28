@@ -61,29 +61,33 @@ public class HomeActivity extends Activity {
 				case 0:
 					showLostFindDialog();// 进入手机防盗的对话框；
 					break;
-				case 1://进入通讯卫士
+				case 1:// 进入通讯卫士
 					intent = new Intent(HomeActivity.this,
 							BlackNumberActivity.class);
 					startActivity(intent);
 					break;
-				case 2://进入软件管理
+				case 2:// 进入软件管理
 					intent = new Intent(HomeActivity.this,
 							AppManagerActivity.class);
 					startActivity(intent);
 					break;
-				case 3://进入进程管理
+				case 3:// 进入进程管理
 					intent = new Intent(HomeActivity.this,
 							TaskManagerActivity.class);
 					startActivity(intent);
 					break;
-				case 5://进入病毒查杀
+				case 5:// 进入病毒查杀
 					intent = new Intent(HomeActivity.this,
 							AntivirusActivity.class);
 					startActivity(intent);
 					break;
-				case 7:// 进入高级工具
+				case 6:// 进入缓存清理
 					intent = new Intent(HomeActivity.this,
-							AtoolsActivity.class);
+							CleanCacheActivity.class);
+					startActivity(intent);
+					break;
+				case 7:// 进入高级工具
+					intent = new Intent(HomeActivity.this, AtoolsActivity.class);
 					startActivity(intent);
 					break;
 				case 8:// 进入设置中心

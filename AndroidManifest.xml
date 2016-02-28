@@ -31,6 +31,7 @@
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <application
@@ -65,6 +66,7 @@
         <activity android:name="com.itheima.mobilesafe.TaskSettingActivity" />
         <activity android:name="com.itheima.mobilesafe.AntivirusActivity" />
         <activity android:name="com.itheima.mobilesafe.AppLockActivity" />
+        <activity android:name="com.itheima.mobilesafe.CleanCacheActivity" />
         <activity  
             android:launchMode="singleInstance"
             android:name="com.itheima.mobilesafe.AppLockInterPwdActivity" />
