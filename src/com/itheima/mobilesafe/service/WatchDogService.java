@@ -1,5 +1,6 @@
 package com.itheima.mobilesafe.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ActivityManager;
@@ -9,6 +10,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 
@@ -27,6 +31,9 @@ public class WatchDogService extends Service {
 	// 临时停止保护的包名
 	private String tempStopProtectPackageName;
 	private WatchDogReceiver watchDogReceiver;
+
+	// 已上锁的应用包名集合
+	private List<String> packageNameInfos;
 
 	private class WatchDogReceiver extends BroadcastReceiver {
 
@@ -60,10 +67,35 @@ public class WatchDogService extends Service {
 		return null;
 	}
 
+	private class AppLockContentObserver extends ContentObserver {
+
+		public AppLockContentObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			packageNameInfos = dao.findAll();
+		}
+
+	}
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		context = this;
+
+		// 注册内容提供者
+		getContentResolver().registerContentObserver(
+				Uri.parse("content://com.itheima.mobilesafe.applock.change"),
+				true, new AppLockContentObserver(new Handler()) {
+				});
+
+		// 填充数据
+		dao = new AppLockDao(context);
+		packageNameInfos = dao.findAll();
+
 		// 注册广播接收者
 		watchDogReceiver = new WatchDogReceiver();
 		IntentFilter filter = new IntentFilter();
@@ -82,7 +114,7 @@ public class WatchDogService extends Service {
 
 		// 获取进程管理器
 		activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-		dao = new AppLockDao(context);
+
 		// 开启看门狗
 		startWatchDog();
 	}
@@ -105,7 +137,10 @@ public class WatchDogService extends Service {
 					// 让线程休息一下
 					SystemClock.sleep(50);
 					LogUtil.d(TAG, "packageName:" + packageName);
-					if (dao.find(packageName)) {
+					// 从数据库中查找有没有上锁
+					// if (dao.find(packageName)) {
+					// 优化成从内存中查找
+					if (packageNameInfos.contains(packageName)) {
 						// 启动的包名等于临时保护的包名时，跳过程序锁
 						if (packageName.equals(tempStopProtectPackageName)) {
 							// do nothing
@@ -132,6 +167,6 @@ public class WatchDogService extends Service {
 		if (watchDogReceiver != null) {
 			unregisterReceiver(watchDogReceiver);
 			watchDogReceiver = null;
-		} 
+		}
 	}
 }

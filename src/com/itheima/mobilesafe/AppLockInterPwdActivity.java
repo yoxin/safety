@@ -17,7 +17,7 @@ public class AppLockInterPwdActivity extends Activity implements
 
 	private EditText et_pwd;
 	private Context context;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,4 +100,21 @@ public class AppLockInterPwdActivity extends Activity implements
 		}
 	}
 
+	// 监听当前页面的后退健
+	// <intent-filter>
+	// <action android:name="android.intent.action.MAIN" />
+	// <category android:name="android.intent.category.HOME" />
+	// <category android:name="android.intent.category.DEFAULT" />
+	// <category android:name="android.intent.category.MONKEY"/>
+	// </intent-filter>
+	@Override
+	public void onBackPressed() {
+		// 当用户输入后退健 的时候。我们进入到桌面
+		Intent intent = new Intent();
+		intent.setAction("android.intent.action.MAIN");
+		intent.addCategory("android.intent.category.HOME");
+		intent.addCategory("android.intent.category.DEFAULT");
+		intent.addCategory("android.intent.category.MONKEY");
+		startActivity(intent);
+	}
 }
