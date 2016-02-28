@@ -45,6 +45,7 @@ import com.itheima.mobilesafe.db.dao.AntivirusQueryUtils;
 import com.itheima.mobilesafe.domain.Virus;
 import com.itheima.mobilesafe.service.AddressService;
 import com.itheima.mobilesafe.service.CallSmsSafeService;
+import com.itheima.mobilesafe.service.WatchDogService;
 import com.itheima.mobilesafe.utils.LogUtil;
 import com.itheima.mobilesafe.utils.StreamTools;
 import com.lidroid.xutils.HttpUtils;
@@ -95,6 +96,12 @@ public class SplashActivity extends Activity {
 		boolean isCallSmsSafe = sp.getBoolean("callSmsSafe", false);
 		if (isCallSmsSafe) {
 			Intent intent = new Intent(this, CallSmsSafeService.class);
+			startService(intent);
+		}
+		// 开启看门狗服务
+		boolean isWatchDog = sp.getBoolean("watchDog", false);
+		if (isWatchDog) {
+			Intent intent = new Intent(this, WatchDogService.class);
 			startService(intent);
 		}
 		boolean update = sp.getBoolean("update", false);

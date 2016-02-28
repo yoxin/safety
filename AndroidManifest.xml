@@ -30,6 +30,7 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <application
@@ -99,6 +100,9 @@
         <service android:name="com.itheima.mobilesafe.service.AutoClearService" >
         </service>
         <service android:name="com.itheima.mobilesafe.service.UpdateWidgetService" >
+        </service>
+        <!-- 看门狗 -->
+        <service android:name="com.itheima.mobilesafe.service.WatchDogService" >
         </service>
     </application>
 

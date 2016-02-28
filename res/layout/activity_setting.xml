@@ -42,4 +42,13 @@
         android:layout_height="wrap_content" >
     </com.itheima.mobilesafe.ui.SettingItemView>
     
+    <com.itheima.mobilesafe.ui.SettingItemView
+        android:id="@+id/siv_watch_dog"
+        itheima:title="设置安全锁功能"
+        itheima:desc_on="安全锁已经开启"
+        itheima:desc_off="安全锁已经关闭"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </com.itheima.mobilesafe.ui.SettingItemView>
+    
 </LinearLayout>

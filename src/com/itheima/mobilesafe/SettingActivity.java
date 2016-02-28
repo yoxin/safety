@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 
 import com.itheima.mobilesafe.service.AddressService;
 import com.itheima.mobilesafe.service.CallSmsSafeService;
+import com.itheima.mobilesafe.service.WatchDogService;
 import com.itheima.mobilesafe.ui.SettingClickView;
 import com.itheima.mobilesafe.ui.SettingItemView;
 import com.itheima.mobilesafe.utils.ServiceUtils;
@@ -23,6 +24,8 @@ public class SettingActivity extends Activity {
 	private SettingItemView siv_show_address;
 	private SettingClickView scv_changebg;
 	private SettingItemView siv_callsms_safe;
+	private SettingItemView siv_watch_dog;
+	private Intent watchDogIntent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +132,26 @@ public class SettingActivity extends Activity {
 				editor.commit();
 			}
 		});
+		
+		siv_watch_dog = (SettingItemView) findViewById(R.id.siv_watch_dog);
+		watchDogIntent = new Intent(this, WatchDogService.class);
+		siv_watch_dog.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Editor editor = sp.edit();
+				if (siv_watch_dog.isChecked()) {
+					siv_watch_dog.setChecked(false);
+					stopService(watchDogIntent);
+					editor.putBoolean("watchDog", false);
+				} else {
+					siv_watch_dog.setChecked(true);
+					startService(watchDogIntent);
+					editor.putBoolean("watchDog", true);
+				}
+				editor.commit();
+			}
+		});
 	}
 
 	@Override
@@ -147,6 +170,14 @@ public class SettingActivity extends Activity {
 			siv_callsms_safe.setChecked(true);
 		} else {
 			siv_callsms_safe.setChecked(false);
+		}
+		
+		//°²È«Ëø
+		if (ServiceUtils.isServiceRunning(this,
+				"com.itheima.mobilesafe.service.WatchDogService")) {
+			siv_watch_dog.setChecked(true);
+		} else {
+			siv_watch_dog.setChecked(false);
 		}
 		super.onResume();
 	}
