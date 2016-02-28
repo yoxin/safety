@@ -65,6 +65,7 @@
         <activity android:name="com.itheima.mobilesafe.TaskSettingActivity" />
         <activity android:name="com.itheima.mobilesafe.AntivirusActivity" />
         <activity android:name="com.itheima.mobilesafe.AppLockActivity" />
+        <activity android:name="com.itheima.mobilesafe.AppLockInterPwdActivity" />
 
         <receiver android:name="com.itheima.mobilesafe.receiver.BootCompleteReceiver" >
             <intent-filter>
