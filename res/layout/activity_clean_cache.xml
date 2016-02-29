@@ -8,6 +8,23 @@
         style="@style/text_title_style"
         android:text="缓存清理" />
 
+    <TextView
+        android:id="@+id/tv_count"
+        style="@style/text_small_title"
+        android:text="需要清理缓存的软件有几个" />
+
+    <ListView
+        android:id="@+id/lv_cache"
+        android:layout_weight="100"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </ListView>
     
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/function_greenbutton_selector"
+        android:onClick="cleanAll"
+        android:text="一键清理" />
 
 </LinearLayout>
